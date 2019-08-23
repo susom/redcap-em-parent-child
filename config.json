@@ -1,0 +1,59 @@
+{
+  "name": "Parent Child EM",
+  "namespace": "Stanford\\ParentChild",
+  "description": "Define Parent Child Relation between two arms.",
+  "authors": [
+    {
+      "name": "Ihab Zeedia",
+      "email": "ihabz@stanford.edu",
+      "institution": "Stanford University"
+    },
+    {
+      "name": "Andy Martin",
+      "email": "andy123@stanford.edu",
+      "institution": "Stanford University"
+    }
+  ],
+  "permissions": [
+    "redcap_data_entry_form"
+  ],
+  "links": {
+    "project": [
+      {
+        "name": "Main Report Page",
+        "icon": "report",
+        "url": "view/index.php",
+        "show-header-and-footer": false
+      }
+    ]
+  },
+  "project-settings": [
+    {
+      "key": "instance",
+      "name": "<b>Configure Parent Child Instance</b>",
+      "required": true,
+      "type": "sub_settings",
+      "repeatable": true,
+      "sub_settings": [
+        {
+          "key": "parent_event",
+          "name": "<b>Select Parent Event</b><br>",
+          "required": true,
+          "type": "event-list"
+        },
+        {
+          "key": "child_event",
+          "name": "<b>Select Child Event</b><br>",
+          "required": true,
+          "type": "event-list"
+        },
+        {
+          "key": "child_foreign_key",
+          "name": "<b>Select Foreign Key for this relation.</b><br>",
+          "required": true,
+          "type": "field-list"
+        }
+      ]
+    }
+  ]
+}
