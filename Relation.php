@@ -9,27 +9,51 @@ namespace Stanford\ParentChild;
  * @property int $parentEventId
  * @property int $childEventId
  * @property int $foreignKey
+ * @property string $parentDisplayLabel
  */
-class Relation
+class Relation extends Main
 {
-
     private $parentEventId;
 
     private $childEventId;
 
     private $foreignKey;
 
-    public function __construct($parentEventId, $childEventId, $foreignKey)
+    private $parentDisplayLabel;
+
+    /**
+     * Relation constructor.
+     * @param array $instance
+     */
+    public function __construct($instance)
     {
         try {
-            $this->setChildEventId($childEventId);
+            $this->setChildEventId($instance[CHILD_EVENT]);
 
-            $this->setForeignKey($foreignKey);
+            $this->setForeignKey($instance[CHILD_FOREIGN_KEY]);
 
-            $this->setParentEventId($parentEventId);
+            $this->setParentEventId($instance[PARENT_EVENT]);
+
+            $this->setParentDisplayLabel($instance[PARENT_DISPLAY_LABEL]);
         } catch (\LogicException $e) {
             echo $e->getMessage();
         }
+    }
+
+    /**
+     * @return string
+     */
+    public function getParentDisplayLabel()
+    {
+        return $this->parentDisplayLabel;
+    }
+
+    /**
+     * @param string $parentDisplayLabel
+     */
+    public function setParentDisplayLabel($parentDisplayLabel)
+    {
+        $this->parentDisplayLabel = $parentDisplayLabel;
     }
 
     /**

@@ -15,18 +15,9 @@
     }
   ],
   "permissions": [
-    "redcap_data_entry_form"
+    "redcap_data_entry_form",
+    "redcap_every_page_top"
   ],
-  "links": {
-    "project": [
-      {
-        "name": "Main Report Page",
-        "icon": "report",
-        "url": "view/index.php",
-        "show-header-and-footer": false
-      }
-    ]
-  },
   "project-settings": [
     {
       "key": "instance",
@@ -40,6 +31,12 @@
           "name": "<b>Select Parent Event</b><br>",
           "required": true,
           "type": "event-list"
+        },
+        {
+          "key": "parent_display_label",
+          "name": "<b>Type how Parent Record will be displayed</b><br>For Example: [field_nam]",
+          "required": true,
+          "type": "text"
         },
         {
           "key": "child_event",
