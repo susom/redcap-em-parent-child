@@ -38,8 +38,15 @@ Abstract class Main
 
         $q = db_query($sql);
 
-        if ($row = db_fetch_assoc($q)) {
+        if (db_num_rows($q) == 1) {
+            $row = db_fetch_assoc($q);
             return $row['form_name'];
+        } else {
+            $result = array();
+            while ($row = db_fetch_assoc($q)) {
+                $result[] = $row['form_name'];
+            }
+            return $result;
         }
     }
 

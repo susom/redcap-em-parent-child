@@ -8,6 +8,7 @@ include_once "Main.php";
 include_once "ParentArm.php";
 include_once "ChildArm.php";
 include_once "Relation.php";
+include_once "RelationalReport.php";
 
 
 define("PARENT_EVENT", "parent_event");
@@ -31,6 +32,7 @@ define("PARENT_DISPLAY_LABEL", "parent_display_label");
  * @property boolean $dirty
  * @property array $record
  * @property string $parentRow
+ * @property RelationalReport $relationalReport
  */
 class ParentChild extends \ExternalModules\AbstractExternalModule
 {
@@ -99,6 +101,8 @@ class ParentChild extends \ExternalModules\AbstractExternalModule
      * @var
      */
     private $parentRow;
+
+    private $relationalReport;
     public function __construct()
     {
         try {
@@ -113,6 +117,22 @@ class ParentChild extends \ExternalModules\AbstractExternalModule
         } catch (\LogicException $e) {
             echo $e->getMessage();
         }
+    }
+
+    /**
+     * @return RelationalReport
+     */
+    public function getRelationalReport()
+    {
+        return $this->relationalReport;
+    }
+
+    /**
+     * @param RelationalReport $relationalReport
+     */
+    public function setRelationalReport($relationalReport)
+    {
+        $this->relationalReport = $relationalReport;
     }
 
     /**
@@ -424,7 +444,7 @@ class ParentChild extends \ExternalModules\AbstractExternalModule
      * @param string $type
      * @return bool|array
      */
-    private function getParentEventRelation($eventId)
+    public function getParentEventRelation($eventId)
     {
         $result = array();
         foreach ($this->getInstances() as $instance) {
