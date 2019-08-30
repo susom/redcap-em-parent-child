@@ -24,7 +24,7 @@ if ($this->getParentRow()) {
         window.addEventListener("load", ChildObject.injectParentRow(content), true);
     </script>
     <?php
-} elseif ($this->isDirty()) {
+} else {
     ?>
     <script>
 
