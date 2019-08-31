@@ -50,6 +50,20 @@ Abstract class Main
         }
     }
 
+    public function getArmIdViaEventId($eventId)
+    {
+        $sql = "SELECT arm_id FROM redcap_events_metadata WHERE event_id = $eventId";
+
+        $q = db_query($sql);
+
+        if (db_num_rows($q) == 1) {
+            $row = db_fetch_assoc($q);
+            return $row['arm_id'];
+        } else {
+            return false;
+        }
+    }
+
     protected function getInstrumentMenuDescription($name)
     {
 

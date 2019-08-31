@@ -6,6 +6,7 @@ namespace Stanford\ParentChild;
  * Class ParentArm
  * @package Stanford\ParentChild
  * @property int $eventId
+ * @property int $armId
  * @property string $instrument
  * @property array $record
  * @property array $dropDownList
@@ -27,6 +28,7 @@ class ParentArm extends Main
 
     private $relation;
 
+    private $armId;
     /**
      * ParentArm constructor.
      * @param int $eventId
@@ -34,7 +36,7 @@ class ParentArm extends Main
      * @param string $parentDisplayLabel
      * @param Relation $relation
      */
-    public function __construct($eventId, $projectId, $parentDisplayLabel, $relation)
+    public function __construct($eventId, $projectId, $parentDisplayLabel, $relation = null)
     {
         try {
             $this->setEventId($eventId);
@@ -49,15 +51,18 @@ class ParentArm extends Main
              */
             $this->setInstrument($this->getInstrumentNameViaEventId($this->getEventId()));
 
+            $this->setArmId($this->getArmIdViaEventId($this->getEventId()));
             /**
              * set instrument label
              */
             $this->getInstrumentMenuDescription($this->getInstrument());
 
-            /**
-             * Set this parent relation.
-             */
-            $this->setRelation($relation);
+            if (!is_null($relation)) {
+                /**
+                 * Set this parent relation.
+                 */
+                $this->setRelation($relation);
+            }
             /**
              * create the dropdown list
              */
@@ -74,6 +79,22 @@ class ParentArm extends Main
         } catch (\LogicException $e) {
             echo $e->getMessage();
         }
+    }
+
+    /**
+     * @return int
+     */
+    public function getArmId()
+    {
+        return $this->armId;
+    }
+
+    /**
+     * @param int $armId
+     */
+    public function setArmId($armId)
+    {
+        $this->armId = $armId;
     }
 
     /**
@@ -103,8 +124,11 @@ class ParentArm extends Main
     /**
      * @param string $recordId
      */
-    public function setUrl($recordId)
+    public function setUrl($recordId = null)
     {
+        if (is_null($recordId)) {
+            $recordId = $this->getNextId($this->getProjectId(), $this->getEventId());
+        }
         $this->url = $this->generateInsertRecordURL($this->getProjectId(), $this->getEventId(), $this->getInstrument(),
             $recordId);
     }

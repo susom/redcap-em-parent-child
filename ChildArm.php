@@ -7,6 +7,7 @@ namespace Stanford\ParentChild;
  * Class ChildArm
  * @package Stanford\ParentChild
  * @property int $eventId
+ * @property int $armId
  * @property int $recordId
  * @property string $button
  * @property string $instrument
@@ -34,6 +35,7 @@ class ChildArm extends Main
 
     private $recordId;
 
+    private $armId;
     /**
      * ChildArm constructor.
      * @param int $eventId
@@ -73,6 +75,22 @@ class ChildArm extends Main
         } catch (\LogicException $e) {
             echo $e->getMessage();
         }
+    }
+
+    /**
+     * @return int
+     */
+    public function getArmId()
+    {
+        return $this->armId;
+    }
+
+    /**
+     * @param int $armId
+     */
+    public function setArmId($armId)
+    {
+        $this->armId = $armId;
     }
 
     /**

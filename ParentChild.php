@@ -32,6 +32,7 @@ define("PARENT_DISPLAY_LABEL", "parent_display_label");
  * @property boolean $dirty
  * @property array $record
  * @property string $parentRow
+ * @property string $addRecordURL
  * @property RelationalReport $relationalReport
  */
 class ParentChild extends \ExternalModules\AbstractExternalModule
@@ -102,6 +103,7 @@ class ParentChild extends \ExternalModules\AbstractExternalModule
      */
     private $parentRow;
 
+    private $addRecordURL;
     private $relationalReport;
     public function __construct()
     {
@@ -118,6 +120,23 @@ class ParentChild extends \ExternalModules\AbstractExternalModule
             echo $e->getMessage();
         }
     }
+
+    /**
+     * @return string
+     */
+    public function getAddRecordURL()
+    {
+        return $this->addRecordURL;
+    }
+
+    /**
+     * @param string $addRecordURL
+     */
+    public function setAddRecordURL($addRecordURL)
+    {
+        $this->addRecordURL = $addRecordURL;
+    }
+
 
     /**
      * @return RelationalReport
@@ -501,5 +520,22 @@ class ParentChild extends \ExternalModules\AbstractExternalModule
         } else {
             throw new \LogicException("Data is missing");
         }
+    }
+
+    /**
+     * this hook will force add record only for main
+     * @param int $project_id
+     * @param string $instrument
+     * @param int $event_id
+     */
+    public function redcap_add_edit_records_page($project_id, $instrument, $event_id)
+    {
+        $this->setProjectId($project_id);
+        $this->setEventId($this->getFirstEventId());
+
+
+        $this->setParentArm(new ParentArm($this->getEventId(), $this->getProjectId(), ''));
+        $this->getParentArm()->setUrl();
+        $this->includeFile("view/Form.php");
     }
 }

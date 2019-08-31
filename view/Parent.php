@@ -39,7 +39,7 @@ if ($this->isInjectElement()) {
         /**
          * once everything is loaded trigger this function
          */
-
+        //TODO move the children section to button of parent form
         window.addEventListener("load", ParentObject.inject(urls), true);
     </script>
     <?php
