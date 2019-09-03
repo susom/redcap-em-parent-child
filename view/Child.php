@@ -43,6 +43,11 @@ if ($this->isOrphan()) {
          * once everything is loaded trigger this function
          */
         window.addEventListener("load", ChildObject.orphanNote(), true);
+        var content = "<?php echo $this->getTopParentRow()  ?>";
+        /**
+         * once everything is loaded trigger this function
+         */
+        window.addEventListener("load", ChildObject.injectParentRow(content, "<?php echo $this->getTopParentArm()->getRelation()->getTopForeignKey()  ?>"), true);
     </script>
     <?php
 }

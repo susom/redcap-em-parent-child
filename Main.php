@@ -134,10 +134,11 @@ Abstract class Main
     public static function getRecords($eventId, $id = null)
     {
         if (!is_null($id)) {
+            $idField = REDCap::getRecordIdField();
             $params = array(
                 'return_format' => 'array',
                 'events' => $eventId,
-                'filterLogic' => "[id] = '$id'"
+                'filterLogic' => "[$idField] = '$id'"
             );
         } else {
             $params = array(

@@ -2,6 +2,8 @@
 
 namespace Stanford\ParentChild;
 
+ini_set("memory_limit", "-1");
+set_time_limit(0);
 use REDCap;
 
 include_once "Main.php";
@@ -15,11 +17,14 @@ define("PARENT_EVENT", "parent_event");
 define("CHILD_EVENT", "child_event");
 define("CHILD_FOREIGN_KEY", "child_foreign_key");
 define("PARENT_DISPLAY_LABEL", "parent_display_label");
+define("DISPLAY_CHILDREN_RECORDS", "display_children_records");
+define("TOP_FOREIGN_KEY", "top_foreign_key");
 
 /**
  * Class ParentChild
  * @package Stanford\ParentChild
  * @property ParentArm $parentArm
+ * @property ParentArm $topParentArm
  * @property array $childrenArms
  * @property array $parentRelation
  * @property Relation $childRelation
@@ -32,6 +37,7 @@ define("PARENT_DISPLAY_LABEL", "parent_display_label");
  * @property boolean $dirty
  * @property array $record
  * @property string $parentRow
+ * @property string $topParentRow
  * @property string $addRecordURL
  * @property RelationalReport $relationalReport
  */
@@ -42,6 +48,8 @@ class ParentChild extends \ExternalModules\AbstractExternalModule
      * @var
      */
     private $parentArm;
+
+    private $topParentArm;
 
     /**
      * @var
@@ -103,6 +111,8 @@ class ParentChild extends \ExternalModules\AbstractExternalModule
      */
     private $parentRow;
 
+    private $topParentRow;
+
     private $addRecordURL;
     private $relationalReport;
     public function __construct()
@@ -119,6 +129,38 @@ class ParentChild extends \ExternalModules\AbstractExternalModule
         } catch (\LogicException $e) {
             echo $e->getMessage();
         }
+    }
+
+    /**
+     * @return string
+     */
+    public function getTopParentRow()
+    {
+        return $this->topParentRow;
+    }
+
+    /**
+     * @param string $topParentRow
+     */
+    public function setTopParentRow($topParentRow)
+    {
+        $this->topParentRow = $topParentRow;
+    }
+
+    /**
+     * @return ParentArm
+     */
+    public function getTopParentArm()
+    {
+        return $this->topParentArm;
+    }
+
+    /**
+     * @param ParentArm $topParentArm
+     */
+    public function setTopParentArm($topParentArm)
+    {
+        $this->topParentArm = $topParentArm;
     }
 
     /**
@@ -440,6 +482,36 @@ class ParentChild extends \ExternalModules\AbstractExternalModule
                  */
                 if (empty($this->getParentArm()->getRecord())) {
                     $this->setOrphan(true);
+
+                    /**
+                     * if case no direct parent exists then use top parent
+                     */
+                    $parentRecordId = $this->getRecord()[$record][$this->getEventId()][$child[TOP_FOREIGN_KEY]];
+
+                    /**
+                     * for temp only we will create parent object for top parent. and create temp relation between current event and top parent.
+                     */
+                    $instance = array(
+                        PARENT_EVENT => $this->getFirstEventId(),
+                        CHILD_EVENT => $this->getEventId(),
+                        CHILD_FOREIGN_KEY => $this->getProjectSetting("top_parent_display_label")
+                    );
+
+                    $relation = new Relation($instance);
+
+                    $this->setTopParentArm(new ParentArm($this->getFirstEventId(), $project_id,
+                        $this->getProjectSetting("top_parent_display_label"), $relation));
+                    $this->getTopParentArm()->setRecord(Main::getRecords($this->getFirstEventId(), $parentRecordId));
+                    $this->getTopParentArm()->setUrl($parentRecordId);
+                    /**
+                     * this will make sure record show up in correct position.
+                     */
+                    $this->getTopParentArm()->getRelation()->setTopForeignKey($child[TOP_FOREIGN_KEY]);
+
+                    /**
+                     * top parent row is not editable.
+                     */
+                    $this->setTopParentRow("<div id='parent-row' data-parent-id='" . $parentRecordId . "'><a href='" . $this->getTopParentArm()->getUrl() . "'>Parent Record for this record is " . $this->getTopParentArm()->getDropDownList()[$parentRecordId] . "</a></div>");
                 } else {
                     /**
                      * set the URL for parent record

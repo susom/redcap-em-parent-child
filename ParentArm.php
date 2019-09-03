@@ -29,6 +29,8 @@ class ParentArm extends Main
     private $relation;
 
     private $armId;
+
+    private $topForeignKey;
     /**
      * ParentArm constructor.
      * @param int $eventId
@@ -79,6 +81,22 @@ class ParentArm extends Main
         } catch (\LogicException $e) {
             echo $e->getMessage();
         }
+    }
+
+    /**
+     * @return string
+     */
+    public function getTopForeignKey()
+    {
+        return $this->topForeignKey;
+    }
+
+    /**
+     * @param string $topForeignKey
+     */
+    public function setTopForeignKey($topForeignKey)
+    {
+        $this->topForeignKey = $topForeignKey;
     }
 
     /**

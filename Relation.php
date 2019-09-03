@@ -10,6 +10,8 @@ namespace Stanford\ParentChild;
  * @property int $childEventId
  * @property int $foreignKey
  * @property string $parentDisplayLabel
+ * @property boolean $displayChildren
+ * @property string $topForeignKey
  */
 class Relation extends Main
 {
@@ -21,6 +23,9 @@ class Relation extends Main
 
     private $parentDisplayLabel;
 
+    private $displayChildren;
+
+    private $topForeignKey;
     /**
      * Relation constructor.
      * @param array $instance
@@ -35,9 +40,43 @@ class Relation extends Main
             $this->setParentEventId($instance[PARENT_EVENT]);
 
             $this->setParentDisplayLabel($instance[PARENT_DISPLAY_LABEL]);
+
+            $this->setDisplayChildren($instance[DISPLAY_CHILDREN_RECORDS]);
         } catch (\LogicException $e) {
             echo $e->getMessage();
         }
+    }
+
+    /**
+     * @return string
+     */
+    public function getTopForeignKey()
+    {
+        return $this->topForeignKey;
+    }
+
+    /**
+     * @param string $topForeignKey
+     */
+    public function setTopForeignKey($topForeignKey)
+    {
+        $this->topForeignKey = $topForeignKey;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isDisplayChildren()
+    {
+        return $this->displayChildren;
+    }
+
+    /**
+     * @param bool $displayChildren
+     */
+    public function setDisplayChildren($displayChildren)
+    {
+        $this->displayChildren = $displayChildren;
     }
 
     /**

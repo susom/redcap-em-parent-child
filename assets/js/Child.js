@@ -29,8 +29,11 @@ ChildObject = {
         select = ChildObject.generateDropDown();
         $input.replaceWith(select);
     },
-    injectParentRow: function (content) {
-        var $input = jQuery("[name='" + this.parentInputName + "']");
+    injectParentRow: function (content, name) {
+        if (name == undefined) {
+            name = this.parentInputName;
+        }
+        var $input = jQuery("[name='" + name + "']");
         $input.replaceWith(content);
     },
     moveParentToTop: function ($input) {

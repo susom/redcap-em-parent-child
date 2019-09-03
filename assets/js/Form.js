@@ -1,5 +1,6 @@
 FormObject = {
     addURL: '',
+    //this function will force add form to only allow add record to main parent.
     updateAddURL: function () {
         console.log(FormObject.addURL);
         setTimeout(function () {

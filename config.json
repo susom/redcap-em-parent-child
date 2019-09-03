@@ -31,6 +31,12 @@
   ],
   "project-settings": [
     {
+      "key": "top_parent_display_label",
+      "name": "<b>Type how Parent Record will be displayed</b><br>For Example: [field_nam]",
+      "required": true,
+      "type": "text"
+    },
+    {
       "key": "instance",
       "name": "<b>Configure Parent Child Instance</b>",
       "required": true,
@@ -58,6 +64,18 @@
         {
           "key": "child_foreign_key",
           "name": "<b>Select Foreign Key for this relation.</b><br>",
+          "required": true,
+          "type": "field-list"
+        },
+        {
+          "key": "display_children_records",
+          "name": "Display children records below parent form",
+          "required": false,
+          "type": "checkbox"
+        },
+        {
+          "key": "top_foreign_key",
+          "name": "<b>Fall back Foreign Key</b><br>",
           "required": true,
           "type": "field-list"
         }
