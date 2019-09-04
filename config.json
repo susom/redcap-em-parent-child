@@ -21,6 +21,12 @@
         "icon": "report",
         "url": "view/report/index.php",
         "show-header-and-footer": true
+      },
+      {
+        "name": "Search Relational Record",
+        "icon": "search",
+        "url": "view/search/index.php",
+        "show-header-and-footer": true
       }
     ]
   },

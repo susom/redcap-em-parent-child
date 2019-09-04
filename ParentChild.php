@@ -4,6 +4,7 @@ namespace Stanford\ParentChild;
 
 ini_set("memory_limit", "-1");
 set_time_limit(0);
+
 use REDCap;
 
 include_once "Main.php";
@@ -11,6 +12,7 @@ include_once "ParentArm.php";
 include_once "ChildArm.php";
 include_once "Relation.php";
 include_once "RelationalReport.php";
+include_once "SearchRelation.php";
 
 
 define("PARENT_EVENT", "parent_event");
@@ -43,6 +45,8 @@ define("TOP_FOREIGN_KEY", "top_foreign_key");
  */
 class ParentChild extends \ExternalModules\AbstractExternalModule
 {
+
+    //TODO add new way to define relation without using config.json
 
     /**
      * @var
@@ -115,6 +119,7 @@ class ParentChild extends \ExternalModules\AbstractExternalModule
 
     private $addRecordURL;
     private $relationalReport;
+
     public function __construct()
     {
         try {
@@ -566,12 +571,6 @@ class ParentChild extends \ExternalModules\AbstractExternalModule
         return false;
     }
 
-    public function redcap_every_page_top()
-    {
-        //TODO represent parent record in the display page for child record.
-        //TODO add ajax call to pull list of children and allow user to navigate to them
-    }
-
     /**
      * @param string $path
      */
@@ -595,7 +594,7 @@ class ParentChild extends \ExternalModules\AbstractExternalModule
     }
 
     /**
-     * this hook will force add record only for main
+     * this hook will force add record only for main using top parent
      * @param int $project_id
      * @param string $instrument
      * @param int $event_id
@@ -604,10 +603,8 @@ class ParentChild extends \ExternalModules\AbstractExternalModule
     {
         $this->setProjectId($project_id);
         $this->setEventId($this->getFirstEventId());
-
-
-        $this->setParentArm(new ParentArm($this->getEventId(), $this->getProjectId(), ''));
-        $this->getParentArm()->setUrl();
+        $this->setTopParentArm(new ParentArm($this->getEventId(), $this->getProjectId(), ''));
+        $this->getTopParentArm()->setUrl();
         $this->includeFile("view/Form.php");
     }
 }
