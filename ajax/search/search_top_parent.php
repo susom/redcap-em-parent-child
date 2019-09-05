@@ -30,14 +30,15 @@ try {
             <?php
             foreach ($module->getSearchRelation()->getRecordsList() as $item) {
                 ?>
-                <li class="list-group-item" data-id="<?php echo $item[\REDCap::getRecordIdField()] ?>"
-                    data-instrument="<?php echo $module->getSearchRelation()->getTopParentArm()->getInstrument() ?>"
-                    data-event="<?php echo $module->getSearchRelation()->getEventId() ?>"><?php echo Main::replaceRecordLabels($parentLabel,
-                        $item) ?>
+                <li class="list-group-item"><span class="show-record"
+                                                  data-id="<?php echo $item[\REDCap::getRecordIdField()] ?>"
+                                                  data-instrument="<?php echo $module->getSearchRelation()->getTopParentArm()->getInstrument() ?>"
+                                                  data-event="<?php echo $module->getSearchRelation()->getEventId() ?>"><?php echo Main::replaceRecordLabels($parentLabel,
+                            $item) ?></span>
                     <div class="float-right children-tree" data-id="<?php echo $item[\REDCap::getRecordIdField()] ?>"
                          data-instrument="<?php echo $module->getSearchRelation()->getTopParentArm()->getInstrument() ?>"
                          data-event="<?php echo $module->getSearchRelation()->getEventId() ?>"><i
-                                class="fas fa-chevron-right "></i></div>
+                                class="fas fa-chevron-right"></i></div>
                 </li>
                 <?php
             }
@@ -45,7 +46,7 @@ try {
         </ul>
         <?php
     } else {
-        echo "<div class='alert-info'>No records found</div>";
+        echo "<ul class=\"list-group\" style=\"width: 100%\"><li class=\"list-group-item\">No records found</li></ul>";
     }
 } catch (\LogicException $e) {
     echo "<div class='alert-danger'>" . $e->getMessage() . "</div>";

@@ -30,7 +30,19 @@ Abstract class Main
         $this->projectId = $projectId;
     }
 
+    public static function getInstrumentFieldLabel($field, $instrument)
+    {
+        $sql = "SELECT element_label FROM redcap_metadata WHERE field_name = '$field' AND form_name = '$instrument'";
 
+        $q = db_query($sql);
+
+        if (db_num_rows($q) == 1) {
+            $row = db_fetch_assoc($q);
+            return $row['element_label'];
+        } else {
+            return false;
+        }
+    }
     protected function getInstrumentNameViaEventId($eventId)
     {
 

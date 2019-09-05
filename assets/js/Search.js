@@ -14,30 +14,69 @@ SearchObject = {
             }
         });
 
+        /**
+         * show parent tree
+         */
         jQuery(document).on("click", ".children-tree", function () {
             var instrument = jQuery(this).data('instrument');
             var event = jQuery(this).data('event');
             var id = jQuery(this).data('id');
             var $elem = jQuery(this);
-            SearchObject.buildChildrenTree($elem, event, instrument, id);
+            if ($elem.find("i").hasClass("fa-chevron-down")) {
+                SearchObject.removeTree($elem);
+            } else {
+                SearchObject.buildChildrenTree($elem, event, instrument, id);
+            }
+        });
+
+        /**
+         * show record
+         */
+        jQuery(document).on("click", ".show-record", function () {
+            var instrument = jQuery(this).data('instrument');
+            var event = jQuery(this).data('event');
+            var id = jQuery(this).data('id');
+            var $elem = jQuery(this);
+            SearchObject.showRecord($elem, event, instrument, id);
         });
     },
-    buildChildrenTree: function ($elem, event, instrument, id) {
+    showRecord: function ($elem, event, instrument, id) {
         jQuery.ajax({
-            url: $("#children-tree-url").val(),
+            url: jQuery("#show-record-url").val(),
             data: {event: event, instrument: instrument, id: id},
             type: 'POST',
             success: function (data) {
-                $elem.parent().append(data);
+                jQuery("#record-container").html(data);
             },
             error: function (request, error) {
                 alert("Request: " + JSON.stringify(request));
             }
         });
     },
+    buildChildrenTree: function ($elem, event, instrument, id) {
+        jQuery.ajax({
+            url: jQuery("#children-tree-url").val(),
+            data: {event: event, instrument: instrument, id: id},
+            type: 'POST',
+            success: function (data) {
+                $elem.closest("li").append(data);
+                $elem.find("i").removeClass("fa-chevron-right");
+                $elem.find("i").addClass("fa-chevron-down");
+
+            },
+            error: function (request, error) {
+                alert("Request: " + JSON.stringify(request));
+            }
+        });
+    },
+    removeTree: function ($elem) {
+        $elem.closest("li").find(".row").remove();
+        $elem.find("i").removeClass("fa-chevron-down");
+        $elem.find("i").addClass("fa-chevron-right");
+    },
     searchTopParent: function (term) {
         jQuery.ajax({
-            url: $("#search-top-parent-url").val(),
+            url: jQuery("#search-top-parent-url").val(),
             data: {term: term},
             type: 'POST',
             success: function (data) {

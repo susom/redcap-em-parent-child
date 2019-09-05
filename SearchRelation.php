@@ -9,18 +9,41 @@ namespace Stanford\ParentChild;
  * @property ParentArm $topParentArm
  * @property string $searchTerm
  * @property array $recordsList
+ * @property array $record
  */
 class SearchRelation extends Main
 {
-
+    /**
+     * @var int
+     */
     private $eventId;
 
+    /**
+     * @var ParentArm
+     */
     private $topParentArm;
 
+    /**
+     * @var string
+     */
     private $searchTerm;
 
+    /**
+     * @var array
+     */
     private $recordsList;
 
+    /**
+     * @var array
+     */
+    private $record;
+
+    /**
+     * SearchRelation constructor.
+     * @param int $eventId
+     * @param int $projectId
+     * @param string $parentDisplayLabel
+     */
     public function __construct($eventId, $projectId, $parentDisplayLabel)
     {
         try {
@@ -32,6 +55,22 @@ class SearchRelation extends Main
         } catch (\LogicException $e) {
             echo $e->getMessage();
         }
+    }
+
+    /**
+     * @return array
+     */
+    public function getRecord()
+    {
+        return $this->record;
+    }
+
+    /**
+     * @param array $record
+     */
+    public function setRecord($record)
+    {
+        $this->record = $record;
     }
 
     /**

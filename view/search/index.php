@@ -43,6 +43,8 @@
            value="<?php echo $module->getUrl("ajax/search/search_top_parent.php") ?>">
     <input type="hidden" name="children-tree-url" id="children-tree-url"
            value="<?php echo $module->getUrl("ajax/search/children_tree.php") ?>">
+    <input type="hidden" name="show-record-url" id="show-record-url"
+           value="<?php echo $module->getUrl("ajax/search/show_record.php") ?>">
     <input type="hidden" name="redcap_csrf_token" id="redcap_csrf_token" value="<?php echo System::getCsrfToken() ?>">
     <div class="row p-1">
         <h1>Relational Search</h1>
