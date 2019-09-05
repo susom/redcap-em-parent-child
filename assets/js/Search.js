@@ -1,5 +1,19 @@
 SearchObject = {
     init: function () {
+
+        $body = $("body");
+        /**
+         * display loader
+         */
+        jQuery(document).on({
+            ajaxStart: function () {
+                $body.addClass("loading");
+            },
+            ajaxStop: function () {
+                $body.removeClass("loading");
+            }
+        });
+
         /**
          * Event for search top parent.
          */
