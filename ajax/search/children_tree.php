@@ -7,6 +7,7 @@ namespace Stanford\ParentChild;
 try {
     $id = filter_var($_POST["id"], FILTER_SANITIZE_NUMBER_INT);
     $instrument = filter_var($_POST["instrument"], FILTER_SANITIZE_STRING);
+    $text = filter_var($_POST["text"], FILTER_SANITIZE_STRING);
     $event = filter_var($_POST["event"], FILTER_SANITIZE_STRING);
 
     //create search object by defining parent event arm
@@ -29,35 +30,40 @@ try {
             $childAsParent = $module->getParentEventRelation($child[CHILD_EVENT]);
             if ($records) {
                 ?>
-                <div class="row">
-                    <strong><?php echo $tempChild->getInstrumentLabel() ?></strong>
-                    <ul style="width: 100%">
-                        <?php
-                        foreach ($records as $record) {
-                            $item = $record[$tempChild->getEventId()];
-                            if ($childAsParent != false) {
-                                ?>
-                                <li><span class="show-record" data-id="<?php echo $item[\REDCap::getRecordIdField()] ?>"
-                                          data-instrument="<?php echo $tempChild->getInstrument() ?>"
-                                          data-event="<?php echo $tempChild->getEventId() ?>">
+                <div class="col-12">
+                    <div class="row"><strong><?php echo $tempChild->getInstrumentLabel() ?></strong></div>
+                    <div class="row">
+                        <ul class="list-group list-group-flush" style="width: 100%">
+                            <?php
+                            foreach ($records as $record) {
+                                $item = $record[$tempChild->getEventId()];
+                                if ($childAsParent != false) {
+                                    ?>
+                                    <li class="list-group-item"><span class="show-record"
+                                                                      data-id="<?php echo $item[\REDCap::getRecordIdField()] ?>"
+                                                                      data-instrument="<?php echo $tempChild->getInstrument() ?>"
+                                                                      data-event="<?php echo $tempChild->getEventId() ?>">
                                         <?php echo Main::replaceRecordLabels($childAsParent[0][PARENT_DISPLAY_LABEL],
                                             $item) ?>
                                     </span>
-                                    <div class="float-right children-tree"
-                                         data-id="<?php echo $item[\REDCap::getRecordIdField()] ?>"
-                                         data-instrument="<?php echo $tempChild->getInstrument() ?>"
-                                         data-event="<?php echo $tempChild->getEventId() ?>"><i
-                                                class="fas fa-chevron-right"></i></div>
-                                </li>
-                                <?php
+                                        <div class="float-right children-tree"
+                                             data-id="<?php echo $item[\REDCap::getRecordIdField()] ?>"
+                                             data-text="<?php echo Main::replaceRecordLabels($childAsParent[0][PARENT_DISPLAY_LABEL],
+                                                 $item) ?>"
+                                             data-instrument="<?php echo $tempChild->getInstrument() ?>"
+                                             data-event="<?php echo $tempChild->getEventId() ?>"><i
+                                                    class="fas fa-chevron-right"></i></div>
+                                    </li>
+                                    <?php
+                                }
                             }
-                        }
-                        ?>
-                    </ul>
+                            ?>
+                        </ul>
+                    </div>
                 </div>
                 <?php
             } else {
-                echo "<ul class=\"list-group\" style=\"width: 100%\"><li class=\"list-group-item\">No records for " . $id . " in " . $tempChild->getInstrument() . "</li></ul>";
+                echo "<ul class=\"list-group\" style=\"width: 100%\"><li class=\"list-group-item\">" . $text . " has no " . $tempChild->getInstrument() . " records</li></ul>";
             }
 
         }

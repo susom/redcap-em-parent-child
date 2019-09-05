@@ -35,11 +35,12 @@ SearchObject = {
             var instrument = jQuery(this).data('instrument');
             var event = jQuery(this).data('event');
             var id = jQuery(this).data('id');
+            var text = jQuery(this).data('text');
             var $elem = jQuery(this);
             if ($elem.find("i").hasClass("fa-chevron-down")) {
                 SearchObject.removeTree($elem);
             } else {
-                SearchObject.buildChildrenTree($elem, event, instrument, id);
+                SearchObject.buildChildrenTree($elem, event, instrument, id, text);
             }
         });
 
@@ -67,10 +68,10 @@ SearchObject = {
             }
         });
     },
-    buildChildrenTree: function ($elem, event, instrument, id) {
+    buildChildrenTree: function ($elem, event, instrument, id, text) {
         jQuery.ajax({
             url: jQuery("#children-tree-url").val(),
-            data: {event: event, instrument: instrument, id: id},
+            data: {event: event, instrument: instrument, id: id, text: text},
             type: 'POST',
             success: function (data) {
                 $elem.closest("li").append(data);
