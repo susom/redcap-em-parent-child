@@ -53,7 +53,7 @@
         <button class="btn btn-link collapsed"><h3>Show Filters</h3></button>
     </div>
     <div id="filters-row" class="row p-1">
-        <div class="col-lg-4 mt-2">
+        <div class="col-lg-5 mt-2">
             <div class="row">
                 <?php
                 require_once($module->getModulePath() . "view/search/Form.php");
@@ -65,7 +65,7 @@
                 ?>
             </div>
         </div>
-        <div class="col-lg-8">
+        <div class="col-lg-7">
             <?php
             require_once($module->getModulePath() . "view/search/Record.php");
             ?>

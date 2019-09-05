@@ -628,4 +628,14 @@ class ParentChild extends \ExternalModules\AbstractExternalModule
         $this->getTopParentArm()->setUrl();
         $this->includeFile("view/Form.php");
     }
+
+    public function limitInstrumentFieldsOnly($instrument, $item)
+    {
+        $instrumentFields = \REDCap::getFieldNames($instrument);
+        $temp = array();
+        foreach ($instrumentFields as $field) {
+            $temp[$field] = $item[$field];
+        }
+        return $temp;
+    }
 }
