@@ -21,6 +21,7 @@ define("CHILD_FOREIGN_KEY", "child_foreign_key");
 define("PARENT_DISPLAY_LABEL", "parent_display_label");
 define("DISPLAY_CHILDREN_RECORDS", "display_children_records");
 define("TOP_FOREIGN_KEY", "top_foreign_key");
+define("TOP_PARENT_DISPLAY_LABEL", "top_parent_display_label");
 
 /**
  * Class ParentChild
@@ -42,6 +43,7 @@ define("TOP_FOREIGN_KEY", "top_foreign_key");
  * @property string $topParentRow
  * @property string $addRecordURL
  * @property RelationalReport $relationalReport
+ * @property SearchRelation $searchRelation
  */
 class ParentChild extends \ExternalModules\AbstractExternalModule
 {
@@ -118,7 +120,10 @@ class ParentChild extends \ExternalModules\AbstractExternalModule
     private $topParentRow;
 
     private $addRecordURL;
+
     private $relationalReport;
+
+    private $searchRelation;
 
     public function __construct()
     {
@@ -134,6 +139,22 @@ class ParentChild extends \ExternalModules\AbstractExternalModule
         } catch (\LogicException $e) {
             echo $e->getMessage();
         }
+    }
+
+    /**
+     * @return SearchRelation
+     */
+    public function getSearchRelation()
+    {
+        return $this->searchRelation;
+    }
+
+    /**
+     * @param SearchRelation $searchRelation
+     */
+    public function setSearchRelation($searchRelation)
+    {
+        $this->searchRelation = $searchRelation;
     }
 
     /**
@@ -499,13 +520,13 @@ class ParentChild extends \ExternalModules\AbstractExternalModule
                     $instance = array(
                         PARENT_EVENT => $this->getFirstEventId(),
                         CHILD_EVENT => $this->getEventId(),
-                        CHILD_FOREIGN_KEY => $this->getProjectSetting("top_parent_display_label")
+                        CHILD_FOREIGN_KEY => $this->getProjectSetting(TOP_PARENT_DISPLAY_LABEL)
                     );
 
                     $relation = new Relation($instance);
 
                     $this->setTopParentArm(new ParentArm($this->getFirstEventId(), $project_id,
-                        $this->getProjectSetting("top_parent_display_label"), $relation));
+                        $this->getProjectSetting(TOP_PARENT_DISPLAY_LABEL), $relation));
                     $this->getTopParentArm()->setRecord(Main::getRecords($this->getFirstEventId(), $parentRecordId));
                     $this->getTopParentArm()->setUrl($parentRecordId);
                     /**

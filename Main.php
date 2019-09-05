@@ -151,6 +151,20 @@ Abstract class Main
     }
 
     /**
+     * @param $eventId
+     * @param null $id
+     * @return mixed
+     */
+    public static function searchRecords($eventId, $field, $value)
+    {
+        $params = array(
+            'return_format' => 'array',
+            'events' => $eventId,
+            'filterLogic' => "[$field] = '$value'"
+        );
+        return REDCap::getData($params);
+    }
+    /**
      * @param $recordId
      * @return string
      */

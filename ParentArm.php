@@ -12,6 +12,7 @@ namespace Stanford\ParentChild;
  * @property array $dropDownList
  * @property string $url
  * @property Relation $relation
+ * @property Array $fields
  */
 class ParentArm extends Main
 {
@@ -31,6 +32,8 @@ class ParentArm extends Main
     private $armId;
 
     private $topForeignKey;
+
+    private $fields;
     /**
      * ParentArm constructor.
      * @param int $eventId
@@ -81,6 +84,22 @@ class ParentArm extends Main
         } catch (\LogicException $e) {
             echo $e->getMessage();
         }
+    }
+
+    /**
+     * @return Array
+     */
+    public function getFields()
+    {
+        return $this->fields;
+    }
+
+    /**
+     * @param Array $fields
+     */
+    public function setFields($fields)
+    {
+        $this->fields = $fields;
     }
 
     /**

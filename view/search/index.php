@@ -39,8 +39,10 @@
 <div id="app" class="container">
     <input type="hidden" name="base-url" id="base-url"
            value="<?php echo $_SERVER['REQUEST_SCHEME'] . '://' . SERVER_NAME . APP_PATH_WEBROOT . 'DataExport/report_filter_ajax.php?pid=' . PROJECT_ID ?>">
-    <input type="hidden" name="instrument-fields" id="instrument-fields"
-           value="<?php echo $module->getUrl("ajax/fields.php") ?>">
+    <input type="hidden" name="search-top-parent-url" id="search-top-parent-url"
+           value="<?php echo $module->getUrl("ajax/search/search_top_parent.php") ?>">
+    <input type="hidden" name="children-tree-url" id="children-tree-url"
+           value="<?php echo $module->getUrl("ajax/search/children_tree.php") ?>">
     <input type="hidden" name="redcap_csrf_token" id="redcap_csrf_token" value="<?php echo System::getCsrfToken() ?>">
     <div class="row p-1">
         <h1>Relational Search</h1>
@@ -49,7 +51,7 @@
         <button class="btn btn-link collapsed"><h3>Show Filters</h3></button>
     </div>
     <div id="filters-row" class="row p-1">
-        <div class="col-lg-4">
+        <div class="col-lg-4 mt-2">
             <div class="row">
                 <?php
                 require_once($module->getModulePath() . "view/search/Form.php");
