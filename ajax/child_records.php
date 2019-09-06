@@ -9,10 +9,11 @@ try {
     $event = filter_var($_POST['event'], FILTER_SANITIZE_NUMBER_INT);
 
     $instrument = filter_var($_POST['instrument'], FILTER_SANITIZE_STRING);
-    $recordId = filter_var($_POST['recordId'], FILTER_SANITIZE_NUMBER_INT);
-    $foreignKey = filter_var($_POST['foreignKey'], FILTER_SANITIZE_NUMBER_INT);
+    $recordId = filter_var($_POST['recordId'], FILTER_SANITIZE_STRING);
+    $foreignKey = filter_var($_POST['foreignKey'], FILTER_SANITIZE_STRING);
+    $topParentRecordId = filter_var($_POST['topParentRecordId'], FILTER_SANITIZE_STRING);
     $fields = \REDCap::getFieldNames($instrument);
-    $records = $module->getChildRecords($event, $recordId, $foreignKey);
+    $records = $module->getChildRecords($event, $recordId, $foreignKey, $topParentRecordId);
     $childArm = new ChildArm($event, $module->getProjectId());
     $data = array();
     if (!empty($records)) {

@@ -5,14 +5,15 @@ namespace Stanford\ParentChild;
 /** @var \Stanford\ParentChild\ParentChild $module */
 
 try {
-    $id = filter_var($_POST["id"], FILTER_SANITIZE_NUMBER_INT);
+    $id = filter_var($_POST["id"], FILTER_SANITIZE_STRING);
     $instrument = filter_var($_POST["instrument"], FILTER_SANITIZE_STRING);
     $event = filter_var($_POST["event"], FILTER_SANITIZE_STRING);
 
-    $instrumentFields = \REDCap::getFieldNames($instrument);
+
     //create search object by defining parent event arm
     $module->setSearchRelation(new SearchRelation($event, $module->getProjectId(), ''));
 
+    $instrumentFields = \REDCap::getFieldNames($module->getSearchRelation()->getTopParentArm()->getInstrument());
     /**
      * pull record information. and save it into searchRelation Object.
      */
@@ -27,7 +28,13 @@ try {
     }
 
     ?>
-    <table class="table">
+    <div class="row">
+        <div class="ml-3">
+            <h5><?php echo(is_array($module->getSearchRelation()->getTopParentArm()->getInstrument()) ? implode(", ",
+                    $module->getSearchRelation()->getTopParentArm()->getInstrument()) : $module->getSearchRelation()->getTopParentArm()->getInstrument()) ?></h5>
+        </div>
+    </div>
+    <table class="table" id="record-table">
         <thead class="thead-dark">
         <tr>
             <th>Field</th>
@@ -45,19 +52,21 @@ try {
             }
             ?>
             <tr>
-                <td><?php echo Main::getInstrumentFieldLabel($key, $instrument) ?></td>
+                <td><?php echo Main::getInstrumentFieldLabel($key, $module->getProjectId(),
+                        !is_array($module->getSearchRelation()->getTopParentArm()->getInstrument()) ? $module->getSearchRelation()->getTopParentArm()->getInstrument() : null) ?></td>
                 <td><?php echo $field ?></td>
             </tr>
             <?php
         }
         ?>
-        <tr>
-            <td colspan="2"><a class="btn btn-primary"
-                               href="<?php echo $module->getSearchRelation()->getTopParentArm()->getUrl(); ?>">Edit
-                    Record</a></td>
-        </tr>
         </tbody>
     </table>
+    <div class="row">
+        <a class="btn btn-primary"
+           href="<?php echo Main::getRecordHomeURL($module->getProjectId(),
+               $module->getSearchRelation()->getTopParentArm()->getArmId(), $id); ?>">View
+            Record</a>
+    </div>
     <?php
 } catch (\LogicException $e) {
     echo "<div class='alert-danger'>" . $e->getMessage() . "</div>";

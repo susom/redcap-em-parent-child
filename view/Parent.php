@@ -16,18 +16,23 @@ namespace Stanford\ParentChild;
 if ($this->isInjectElement()) {
     ?>
     <script>
-        ParentObject.recordId = <?php echo filter_var($_GET['id'], FILTER_SANITIZE_NUMBER_INT);  ?>;
+        ParentObject.recordId = "<?php echo filter_var($_GET['id'], FILTER_SANITIZE_STRING);  ?>";
         <?php
         $urls = array();
         foreach ($this->getChildrenArms() as $child){
+
+        $record = $this->getRecord();
+        $record = $record[filter_var($_GET['id'], FILTER_SANITIZE_STRING)][$this->getEventId()];
         /* @var $child ChildArm */
         $arr = array(
             "url" => trim(APP_PATH_WEBROOT_FULL, "/") . $child->getUrl() . "&parent=" . filter_var($_GET['id'],
-                    FILTER_SANITIZE_NUMBER_INT),
+                    FILTER_SANITIZE_STRING),
             "label" => $child->getInstrumentLabel(),
             "childInstrument" => $child->getInstrument(),
             "childEvent" => $child->getEventId(),
-            "foreignKey" => $child->getRelation()->getForeignKey()
+            "foreignKey" => $child->getRelation()->getForeignKey(),
+            "topParentForeignKey" => $child->getRelation()->getTopForeignKey(),
+            "topParentRecordId" => $record[$child->getRelation()->getTopForeignKey()],
         );
         $urls[] = $arr;
         ?>

@@ -30,9 +30,14 @@ Abstract class Main
         $this->projectId = $projectId;
     }
 
-    public static function getInstrumentFieldLabel($field, $instrument)
+    public static function getInstrumentFieldLabel($field, $projectId, $instrument = null)
     {
-        $sql = "SELECT element_label FROM redcap_metadata WHERE field_name = '$field' AND form_name = '$instrument'";
+        if (!is_null($instrument)) {
+            $sql = "SELECT element_label FROM redcap_metadata WHERE field_name = '$field' AND project_id = '$projectId' AND form_name = '$instrument'";
+        } else {
+            $sql = "SELECT element_label FROM redcap_metadata WHERE field_name = '$field' AND project_id = '$projectId'";
+        }
+
 
         $q = db_query($sql);
 
@@ -70,7 +75,10 @@ Abstract class Main
 
         if (db_num_rows($q) == 1) {
             $row = db_fetch_assoc($q);
-            return $row['arm_id'];
+            $sql = "SELECT arm_num FROM redcap_events_arms WHERE arm_id = $row[arm_id]";
+            $q = db_query($sql);
+            $row = db_fetch_assoc($q);
+            return $row['arm_num'];
         } else {
             return false;
         }
@@ -183,6 +191,11 @@ Abstract class Main
     protected function generateInsertRecordURL($projectId, $eventId, $name, $recordId)
     {
         return APP_PATH_WEBROOT . "DataEntry/index.php?pid=$projectId&page=$name&id=$recordId&event_id=$eventId";
+    }
+
+    public static function getRecordHomeURL($projectId, $armId, $recordId)
+    {
+        return APP_PATH_WEBROOT . "DataEntry/record_home.php?pid=$projectId&arm=$armId&id=$recordId";
     }
 
     public static function replaceRecordLabels($text, $row)

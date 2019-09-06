@@ -462,9 +462,7 @@ class ParentChild extends \ExternalModules\AbstractExternalModule
                 $relation = new Relation($p);
 
                 $child = new ChildArm($p[CHILD_EVENT], $project_id, $relation);
-
                 $this->setChildrenArms($child);
-
 
             }
 
@@ -478,8 +476,21 @@ class ParentChild extends \ExternalModules\AbstractExternalModule
         if ($child !== false) {
             $relation = new Relation($child);
 
+            /**
+             * now see if foreign key is not available then fallback to parent
+             */
+            $fallbackId = array();
+            //no value in record for foreign key then lets limit dropdown to parent record if exists
+            if ($this->getRecord()[$record][$this->getEventId()][$relation->getForeignKey()] == "") {
+                if ($this->getRecord()[$record][$this->getEventId()][$relation->getTopForeignKey()] != "") {
+                    $temp = $this->getChildEventRelation($relation->getParentEventId());
+                    $fallback['record_id'] = $this->getRecord()[$record][$this->getEventId()][$relation->getTopForeignKey()];
+                    $fallback['field'] = $temp[CHILD_FOREIGN_KEY];
+                }
+            }
+
             $this->setParentArm(new ParentArm($child[PARENT_EVENT], $project_id, $relation->getParentDisplayLabel(),
-                $relation));
+                $relation, $fallback));
 
             /**
              * if parent id is passed load its record
@@ -600,7 +611,7 @@ class ParentChild extends \ExternalModules\AbstractExternalModule
         include_once $path;
     }
 
-    public function getChildRecords($event, $recordId, $foreignKey)
+    public function getChildRecords($event, $recordId, $foreignKey, $topParentRecordId = null)
     {
         if ($_POST && isset($_POST['instrument']) && isset($_POST['event'])) {
             $params = array(
@@ -608,7 +619,26 @@ class ParentChild extends \ExternalModules\AbstractExternalModule
                 'events' => $event,
                 'filterLogic' => "[$foreignKey] = '$recordId'"
             );
-            return REDCap::getData($params);
+            $records = REDCap::getData($params);
+
+            /**
+             * if no records found lets check the fall back parent if defined
+             */
+            if (empty($records)) {
+                $instance = $this->searchInstances($event, $foreignKey, CHILD_EVENT);
+                if ($instance[TOP_FOREIGN_KEY] != "" && $topParentRecordId != null) {
+                    $foreignKey = $instance[TOP_FOREIGN_KEY];
+                    $params = array(
+                        'return_format' => 'array',
+                        'events' => $event,
+                        'filterLogic' => "[$foreignKey] = '$topParentRecordId'"
+                    );
+                    return REDCap::getData($params);
+
+                }
+            } else {
+                return $records;
+            }
         } else {
             throw new \LogicException("Data is missing");
         }
@@ -631,11 +661,26 @@ class ParentChild extends \ExternalModules\AbstractExternalModule
 
     public function limitInstrumentFieldsOnly($instrument, $item)
     {
+        $id = $item[\REDCap::getRecordIdField()];
         $instrumentFields = \REDCap::getFieldNames($instrument);
         $temp = array();
         foreach ($instrumentFields as $field) {
             $temp[$field] = $item[$field];
         }
+        /**
+         * make sure to get the primary record id
+         */
+        $temp[\REDCap::getRecordIdField()] = $id;
         return $temp;
+    }
+
+    private function searchInstances($eventId, $foreignKey, $type)
+    {
+        foreach ($this->getInstances() as $instance) {
+            if ($instance[$type] == $eventId && $instance[CHILD_FOREIGN_KEY] == $foreignKey) {
+                return $instance;
+            }
+        }
+        return false;
     }
 }

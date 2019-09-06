@@ -5,7 +5,7 @@ namespace Stanford\ParentChild;
 /** @var \Stanford\ParentChild\ParentChild $module */
 
 try {
-    $id = filter_var($_POST["id"], FILTER_SANITIZE_NUMBER_INT);
+    $id = filter_var($_POST["id"], FILTER_SANITIZE_STRING);
     $instrument = filter_var($_POST["instrument"], FILTER_SANITIZE_STRING);
     $text = filter_var($_POST["text"], FILTER_SANITIZE_STRING);
     $event = filter_var($_POST["event"], FILTER_SANITIZE_STRING);

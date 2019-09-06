@@ -17,12 +17,6 @@
   "links": {
     "project": [
       {
-        "name": "Relational REDCap Report",
-        "icon": "report",
-        "url": "view/report/index.php",
-        "show-header-and-footer": true
-      },
-      {
         "name": "Search Relational Record",
         "icon": "search",
         "url": "view/search/index.php",

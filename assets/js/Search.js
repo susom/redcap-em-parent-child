@@ -58,10 +58,12 @@ SearchObject = {
     showRecord: function ($elem, event, instrument, id) {
         jQuery.ajax({
             url: jQuery("#show-record-url").val(),
-            data: {event: event, instrument: instrument, id: id},
+            data: {event: event, instrument: instrument, id: id, redcap_csrf_token: jQuery("#redcap_csrf_token").val()},
             type: 'POST',
             success: function (data) {
                 jQuery("#record-container").html(data);
+
+                jQuery("#record-table").dataTable();
             },
             error: function (request, error) {
                 alert("Request: " + JSON.stringify(request));
@@ -71,7 +73,13 @@ SearchObject = {
     buildChildrenTree: function ($elem, event, instrument, id, text) {
         jQuery.ajax({
             url: jQuery("#children-tree-url").val(),
-            data: {event: event, instrument: instrument, id: id, text: text},
+            data: {
+                event: event,
+                instrument: instrument,
+                id: id,
+                text: text,
+                redcap_csrf_token: jQuery("#redcap_csrf_token").val()
+            },
             type: 'POST',
             success: function (data) {
                 $elem.closest("li").append(data);
@@ -92,7 +100,7 @@ SearchObject = {
     searchTopParent: function (term) {
         jQuery.ajax({
             url: jQuery("#search-top-parent-url").val(),
-            data: {term: term},
+            data: {term: term, redcap_csrf_token: jQuery("#redcap_csrf_token").val()},
             type: 'POST',
             success: function (data) {
                 jQuery("#list-container").html(data);

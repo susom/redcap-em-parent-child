@@ -19,6 +19,7 @@ $module->setSearchRelation(new SearchRelation($module->getFirstEventId(), $modul
                                                                                   aria-hidden="true"></i></span>
     </div>
     <input class="form-control my-0 py-1" type="text" id="top-parent-field"
-           placeholder="Search <?php echo $module->getSearchRelation()->getTopParentArm()->getInstrument() ?>"
+           placeholder="Search <?php echo(is_array($module->getSearchRelation()->getTopParentArm()->getInstrument()) ? implode(", ",
+               $module->getSearchRelation()->getTopParentArm()->getInstrument()) : $module->getSearchRelation()->getTopParentArm()->getInstrument()) ?>"
            aria-label="Search" required>
 </div>

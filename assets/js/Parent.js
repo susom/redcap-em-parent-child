@@ -13,10 +13,11 @@ ParentObject = {
             var instrument = "'" + urls[i]['childInstrument'] + "'";
             var event = "'" + urls[i]['childEvent'] + "'";
             var foreignKey = "'" + urls[i]['foreignKey'] + "'";
-            html += '<div class="btn-group nowrap"><button class="btn btn-primaryrc" id="submit-btn-saverecord" name="submit-btn-saverecord" onclick="dataEntrySubmit(this);ParentObject.redirect(' + url + ');" style="margin-bottom:2px;font-size:13px !important;padding:6px 8px;" tabindex="0">Add ' + urls[i]['label'] + '</button><button id="submit-btn-dropdown" title="More save options" class="btn btn-primaryrc btn-savedropdown dropdown-toggle" style="margin-bottom:2px;font-size:13px !important;padding:6px 8px;" tabindex="0" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" onclick="ParentObject.openChildDropdown(' + instrument + ');return false;">\n' +
+            var topParentRecordId = "'" + urls[i]['topParentRecordId'] + "'";
+            html += '<div class="btn-group nowrap"><button class="btn btn-primaryrc" id="submit-btn-saverecord" name="submit-btn-saverecord" onclick="dataEntrySubmit(this);ParentObject.redirect(' + url + ');" style="margin-bottom:2px;font-size:13px !important;padding:6px 8px;" tabindex="0">Save & Add ' + urls[i]['label'] + '</button><button id="submit-btn-dropdown" title="More save options" class="btn btn-primaryrc btn-savedropdown dropdown-toggle" style="margin-bottom:2px;font-size:13px !important;padding:6px 8px;" tabindex="0" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" onclick="ParentObject.openChildDropdown(' + instrument + ');return false;">\n' +
                 '\t\t\t\t\t\t\t\t<span class="sr-only"></span>\n' +
                 '\t\t\t\t\t\t\t</button>';
-            html += '<div class="dropdown-menu-child" id="' + urls[i]['childInstrument'] + '"><a class="dropdown-item" href="javascript:;" id="submit-btn-savecontinue" onclick="ParentObject.getAllChildRecords(' + instrument + ', ' + event + ', ' + foreignKey + ');return false;">Show All ' + urls[i]['label'] + ' Records</a></div></div>';
+            html += '<div class="dropdown-menu-child" id="' + urls[i]['childInstrument'] + '"><a class="dropdown-item" href="javascript:;" id="submit-btn-savecontinue" onclick="ParentObject.getAllChildRecords(' + instrument + ', ' + event + ', ' + foreignKey + ', ' + topParentRecordId + ');return false;">Show All ' + urls[i]['label'] + ' Records</a></div></div>';
         }
         jQuery("#" + this.submissionDiv).append(html);
     },
@@ -29,10 +30,16 @@ ParentObject = {
         jQuery("#" + instrument).toggleClass("show");
 
     },
-    getAllChildRecords: function (instrument, event, foreignKey) {
+    getAllChildRecords: function (instrument, event, foreignKey, topParentRecordId) {
         jQuery.ajax({
             'url': jQuery("#get-child-records-url").val(),
-            'data': {instrument: instrument, event: event, foreignKey: foreignKey, recordId: this.recordId},
+            'data': {
+                instrument: instrument,
+                event: event,
+                foreignKey: foreignKey,
+                recordId: this.recordId,
+                topParentRecordId: topParentRecordId
+            },
             'type': 'POST',
             'success': function (data) {
                 if (!$('#instancesTablePopup').length) {

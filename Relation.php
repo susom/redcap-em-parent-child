@@ -42,6 +42,8 @@ class Relation extends Main
             $this->setParentDisplayLabel($instance[PARENT_DISPLAY_LABEL]);
 
             $this->setDisplayChildren($instance[DISPLAY_CHILDREN_RECORDS]);
+
+            $this->setTopForeignKey($instance[TOP_FOREIGN_KEY]);
         } catch (\LogicException $e) {
             echo $e->getMessage();
         }

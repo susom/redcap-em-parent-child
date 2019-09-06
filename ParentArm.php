@@ -8,6 +8,7 @@ namespace Stanford\ParentChild;
  * @property int $eventId
  * @property int $armId
  * @property string $instrument
+ * @property string $instrumentLabel
  * @property array $record
  * @property array $dropDownList
  * @property string $url
@@ -34,6 +35,8 @@ class ParentArm extends Main
     private $topForeignKey;
 
     private $fields;
+
+    private $instrumentLabel;
     /**
      * ParentArm constructor.
      * @param int $eventId
@@ -41,7 +44,7 @@ class ParentArm extends Main
      * @param string $parentDisplayLabel
      * @param Relation $relation
      */
-    public function __construct($eventId, $projectId, $parentDisplayLabel, $relation = null)
+    public function __construct($eventId, $projectId, $parentDisplayLabel, $relation = null, $fallback = null)
     {
         try {
             $this->setEventId($eventId);
@@ -56,6 +59,15 @@ class ParentArm extends Main
              */
             $this->setInstrument($this->getInstrumentNameViaEventId($this->getEventId()));
 
+
+            /**
+             * set instrument label
+             */
+            $this->setInstrumentLabel($this->getInstrumentMenuDescription($this->getInstrument()));
+
+            /**
+             * Set Arm ID
+             */
             $this->setArmId($this->getArmIdViaEventId($this->getEventId()));
             /**
              * set instrument label
@@ -67,11 +79,21 @@ class ParentArm extends Main
                  * Set this parent relation.
                  */
                 $this->setRelation($relation);
+
+                /**
+                 * if top parent defined then use it to shorten the dropdown list.
+                 */
+                if (!is_null($fallback)) {
+                    $records = Main::searchRecords($this->getEventId(), $fallback['field'], $fallback['record_id']);
+                }
             }
             /**
              * create the dropdown list
              */
-            $records = Main::getRecords($this->getEventId());
+            if (!isset($records)) {
+                $records = Main::getRecords($this->getEventId());
+            }
+
             $list = array();
             foreach ($records as $id => $record) {
                 $row = $record[$this->getEventId()];
@@ -84,6 +106,22 @@ class ParentArm extends Main
         } catch (\LogicException $e) {
             echo $e->getMessage();
         }
+    }
+
+    /**
+     * @return string
+     */
+    public function getInstrumentLabel()
+    {
+        return $this->instrumentLabel;
+    }
+
+    /**
+     * @param string $instrumentLabel
+     */
+    public function setInstrumentLabel($instrumentLabel)
+    {
+        $this->instrumentLabel = $instrumentLabel;
     }
 
     /**
@@ -166,8 +204,7 @@ class ParentArm extends Main
         if (is_null($recordId)) {
             $recordId = $this->getNextId($this->getProjectId(), $this->getEventId());
         }
-        $this->url = $this->generateInsertRecordURL($this->getProjectId(), $this->getEventId(), $this->getInstrument(),
-            $recordId);
+        $this->url = Main::getRecordHomeURL($this->getProjectId(), $this->getArmId(), $recordId);
     }
 
     /**
