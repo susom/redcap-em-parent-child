@@ -620,7 +620,7 @@ class ParentChild extends \ExternalModules\AbstractExternalModule
                 'events' => $event,
                 'filterLogic' => "[$foreignKey] = '$recordId'"
             );
-            $records = REDCap::getData($params);
+            $records = Main::searchRecords($event, $foreignKey, $recordId);
 
             /**
              * if no records found lets check the fall back parent if defined
@@ -628,14 +628,7 @@ class ParentChild extends \ExternalModules\AbstractExternalModule
             if (empty($records)) {
                 $instance = $this->searchInstances($event, $foreignKey, CHILD_EVENT);
                 if ($instance[TOP_FOREIGN_KEY] != "" && $topParentRecordId != null) {
-                    $foreignKey = $instance[TOP_FOREIGN_KEY];
-                    $params = array(
-                        'return_format' => 'array',
-                        'events' => $event,
-                        'filterLogic' => "[$foreignKey] = '$topParentRecordId'"
-                    );
-                    return REDCap::getData($params);
-
+                    return Main::searchRecords($event, $foreignKey, $recordId);
                 }
             } else {
                 return $records;
