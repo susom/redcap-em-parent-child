@@ -563,7 +563,7 @@ class ParentChild extends \ExternalModules\AbstractExternalModule
             }
 
 
-            $this->includeFile("view/Child.php");
+            $this->includeFile("view/child.php");
         }
     }
 
@@ -657,7 +657,7 @@ class ParentChild extends \ExternalModules\AbstractExternalModule
         $this->setEventId($this->getFirstEventId());
         $this->setTopParentArm(new ParentArm($this->getEventId(), $this->getProjectId(), ''));
         $this->getTopParentArm()->setUrl();
-        $this->includeFile("view/Form.php");
+        $this->includeFile("view/form.php");
     }
 
     public function limitInstrumentFieldsOnly($instrument, $item)

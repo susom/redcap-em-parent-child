@@ -56,18 +56,18 @@
         <div class="col-lg-5 mt-2">
             <div class="row">
                 <?php
-                require_once($module->getModulePath() . "view/search/Form.php");
+                require_once($module->getModulePath() . "view/search/form.php");
                 ?>
             </div>
             <div class="row">
                 <?php
-                require_once($module->getModulePath() . "view/search/List.php");
+                require_once($module->getModulePath() . "view/search/list.php");
                 ?>
             </div>
         </div>
         <div class="col-lg-7">
             <?php
-            require_once($module->getModulePath() . "view/search/Record.php");
+            require_once($module->getModulePath() . "view/search/record.php");
             ?>
             <!-- END Correlated Report form -->
         </div>
