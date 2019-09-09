@@ -153,7 +153,11 @@ Abstract class Main
      */
     public static function getRecords($eventId, $id = null)
     {
-        if (!is_null($id)) {
+        $params = array(
+            'return_format' => 'array',
+            'events' => $eventId
+        );
+        /*if (!is_null($id)) {
             $idField = REDCap::getRecordIdField();
             $params = array(
                 'return_format' => 'array',
@@ -165,9 +169,18 @@ Abstract class Main
                 'return_format' => 'array',
                 'events' => $eventId
             );
-        }
+        }*/
 
-        return REDCap::getData($params);
+        $records = REDCap::getData($params);
+        if ($id == null) {
+            return $records;
+        } else {
+            foreach ($records as $recordId => $record) {
+                if ($recordId == $id) {
+                    return array($id => $record);
+                }
+            }
+        }
     }
 
     /**
@@ -177,12 +190,29 @@ Abstract class Main
      */
     public static function searchRecords($eventId, $field, $value)
     {
-        $params = array(
+        $result = array();
+        /*$params = array(
             'return_format' => 'array',
             'events' => $eventId,
             'filterLogic' => "[$field] = '$value'"
+        );*/
+        $params = array(
+            'return_format' => 'array',
+            'events' => $eventId
         );
-        return REDCap::getData($params);
+        $records = REDCap::getData($params);
+        foreach ($records as $id => $record) {
+            $aaaaaa = $record[$eventId][$field];
+            if (isset($record[$eventId][$field]) && $record[$eventId][$field] == $value) {
+                $result[$id] = $record;
+            }
+        }
+        if (empty($result)) {
+            return false;
+        } else {
+            return $result;
+        }
+
     }
     /**
      * @param $recordId

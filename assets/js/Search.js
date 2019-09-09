@@ -35,12 +35,13 @@ SearchObject = {
             var instrument = jQuery(this).data('instrument');
             var event = jQuery(this).data('event');
             var id = jQuery(this).data('id');
+            var topParentId = jQuery(this).data('top-parent-id');
             var text = jQuery(this).data('text');
             var $elem = jQuery(this);
             if ($elem.find("i").hasClass("fa-chevron-down")) {
                 SearchObject.removeTree($elem);
             } else {
-                SearchObject.buildChildrenTree($elem, event, instrument, id, text);
+                SearchObject.buildChildrenTree($elem, event, instrument, id, text, topParentId);
             }
         });
 
@@ -70,13 +71,14 @@ SearchObject = {
             }
         });
     },
-    buildChildrenTree: function ($elem, event, instrument, id, text) {
+    buildChildrenTree: function ($elem, event, instrument, id, text, topParentId) {
         jQuery.ajax({
             url: jQuery("#children-tree-url").val(),
             data: {
                 event: event,
                 instrument: instrument,
                 id: id,
+                topParentId: topParentId,
                 text: text,
                 redcap_csrf_token: jQuery("#redcap_csrf_token").val()
             },

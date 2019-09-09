@@ -90,7 +90,7 @@ class ParentArm extends Main
             /**
              * create the dropdown list
              */
-            if (!isset($records)) {
+            if ($records == false) {
                 $records = Main::getRecords($this->getEventId());
             }
 

@@ -6,6 +6,7 @@ namespace Stanford\ParentChild;
 
 try {
     $id = filter_var($_POST["id"], FILTER_SANITIZE_STRING);
+    $topParentId = filter_var($_POST["topParentId"], FILTER_SANITIZE_STRING);
     $instrument = filter_var($_POST["instrument"], FILTER_SANITIZE_STRING);
     $text = filter_var($_POST["text"], FILTER_SANITIZE_STRING);
     $event = filter_var($_POST["event"], FILTER_SANITIZE_STRING);
@@ -24,7 +25,7 @@ try {
             $tempChild = new ChildArm($child[CHILD_EVENT], $module->getProjectId(), $relation);
 
             //get child records related to parent id
-            $records = $module->getChildRecords($child[CHILD_EVENT], $id, $child[CHILD_FOREIGN_KEY]);
+            $records = $module->getChildRecords($child[CHILD_EVENT], $id, $child[CHILD_FOREIGN_KEY], $topParentId);
 
             //we need to know this event label when its a parent
             $childAsParent = $module->getParentEventRelation($child[CHILD_EVENT]);
@@ -51,6 +52,7 @@ try {
                                     </span>
                                             <div class="float-right children-tree"
                                                  data-id="<?php echo $item[\REDCap::getRecordIdField()] ?>"
+                                                 data-top-parent-id="<?php echo $item[$tempChild->getRelation()->getForeignKey()] ?>"
                                                  data-text="<?php echo Main::replaceRecordLabels($childAsParent[0][PARENT_DISPLAY_LABEL],
                                                      $item) ?>"
                                                  data-instrument="<?php echo $tempChild->getInstrument() ?>"
@@ -64,6 +66,7 @@ try {
                                         ?>
                                         <li class="list-group-item"><span class="show-record"
                                                                           data-id="<?php echo $item[\REDCap::getRecordIdField()] ?>"
+                                                                          data-top-parent-id="<?php echo $item[$tempChild->getRelation()->getForeignKey()] ?>"
                                                                           data-instrument="<?php echo $tempChild->getInstrument() ?>"
                                                                           data-event="<?php echo $tempChild->getEventId() ?>">
                                         <?php echo implode(", ", $item) ?>
