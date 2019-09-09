@@ -139,17 +139,17 @@ class SearchRelation extends Main
 
     public function searchTopParent()
     {
-        foreach ($this->getTopParentArm()->getFields() as $field) {
-            $result = Main::searchRecords($this->getEventId(), $field, $this->getSearchTerm());
-            if (!empty($result)) {
-                foreach ($result as $id => $row) {
-                    //check if record already found via different field
-                    if (!in_array($id, $this->getRecordsList())) {
-                        $record = $row[$this->getEventId()];
-                        $records = $this->getRecordsList();
-                        $records[$id] = $record;
-                        $this->setRecordsList($records);
-                    }
+        $records = $result = Main::getRecords($this->getEventId());
+        foreach ($records as $recordId => $record) {
+            $result = array_search($this->getSearchTerm(), $record[$this->getEventId()]);
+
+            if ($result) {
+                //check if record already found via different field
+                if (!in_array($result, $this->getRecordsList())) {
+                    $row = $record[$this->getEventId()];
+                    $list = $this->getRecordsList();
+                    $list[$result] = $row;
+                    $this->setRecordsList($list);
                 }
 
             }

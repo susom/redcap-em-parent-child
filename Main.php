@@ -202,7 +202,6 @@ Abstract class Main
         );
         $records = REDCap::getData($params);
         foreach ($records as $id => $record) {
-            $aaaaaa = $record[$eventId][$field];
             if (isset($record[$eventId][$field]) && $record[$eventId][$field] == $value) {
                 $result[$id] = $record;
             }
