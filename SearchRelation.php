@@ -165,9 +165,14 @@ class SearchRelation extends Main
     public function getChildrenRecords($children, $recordsId, $topParentId)
     {
         $result = array();
+        //pull all records for all events one time.
+        $events = array();
         foreach ($children as $child) {
-            $records = Main::getRecords($child[CHILD_EVENT]);
-            foreach ($records as $id => $record) {
+            $events[] = $child[CHILD_EVENT];
+        }
+        $records = Main::getRecords($events);
+        foreach ($records as $id => $record) {
+            foreach ($children as $child) {
                 if ($record[$child[CHILD_EVENT]][$child[CHILD_FOREIGN_KEY]] == $recordsId) {
                     $result[$child[CHILD_EVENT]][$id] = $record;
                 } elseif ($record[$child[CHILD_EVENT]][$child[TOP_FOREIGN_KEY]] == $topParentId) {
@@ -175,6 +180,7 @@ class SearchRelation extends Main
                 }
             }
         }
+
         return $result;
     }
 }
