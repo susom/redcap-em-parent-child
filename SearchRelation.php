@@ -155,4 +155,26 @@ class SearchRelation extends Main
             }
         }
     }
+
+    /**
+     * @param array $children
+     * @param int $recordsId
+     * @param int $topParentId
+     * @return array
+     */
+    public function getChildrenRecords($children, $recordsId, $topParentId)
+    {
+        $result = array();
+        foreach ($children as $child) {
+            $records = Main::getRecords($child[CHILD_EVENT]);
+            foreach ($records as $id => $record) {
+                if ($record[$child[CHILD_EVENT]][$child[CHILD_FOREIGN_KEY]] == $recordsId) {
+                    $result[$child[CHILD_EVENT]][$id] = $record;
+                } elseif ($record[$child[CHILD_EVENT]][$child[TOP_FOREIGN_KEY]] == $topParentId) {
+                    $result[$child[CHILD_EVENT]][$id] = $record;
+                }
+            }
+        }
+        return $result;
+    }
 }

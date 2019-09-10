@@ -16,6 +16,8 @@ try {
     //check if there is any children for this event
     $children = $module->getParentEventRelation($event);
 
+
+    $childrenRecords = $module->getSearchRelation()->getChildrenRecords($children, $id, $topParentId);
     if ($children != false) {
         foreach ($children as $child) {
 
@@ -25,7 +27,11 @@ try {
             $tempChild = new ChildArm($child[CHILD_EVENT], $module->getProjectId(), $relation);
 
             //get child records related to parent id
-            $records = $module->getChildRecords($child[CHILD_EVENT], $id, $child[CHILD_FOREIGN_KEY], $topParentId);
+            if (isset($childrenRecords[$child[CHILD_EVENT]])) {
+                $records = $childrenRecords[$child[CHILD_EVENT]];
+            } else {
+                $records = false;
+            }
 
             //we need to know this event label when its a parent
             $childAsParent = $module->getParentEventRelation($child[CHILD_EVENT]);

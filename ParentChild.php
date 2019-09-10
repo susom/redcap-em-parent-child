@@ -615,11 +615,7 @@ class ParentChild extends \ExternalModules\AbstractExternalModule
     public function getChildRecords($event, $recordId, $foreignKey, $topParentRecordId = null)
     {
         if ($_POST && isset($_POST['instrument']) && isset($_POST['event'])) {
-            $params = array(
-                'return_format' => 'array',
-                'events' => $event,
-                'filterLogic' => "[$foreignKey] = '$recordId'"
-            );
+
             $records = Main::searchRecords($event, $foreignKey, $recordId);
 
             /**
@@ -628,7 +624,8 @@ class ParentChild extends \ExternalModules\AbstractExternalModule
             if (empty($records)) {
                 $instance = $this->searchInstances($event, $foreignKey, CHILD_EVENT);
                 if ($instance[TOP_FOREIGN_KEY] != "" && $topParentRecordId != null) {
-                    return Main::searchRecords($event, $foreignKey, $recordId);
+                    $foreignKey = $instance[TOP_FOREIGN_KEY];
+                    return Main::searchRecords($event, $foreignKey, $topParentRecordId);
                 }
             } else {
                 return $records;
