@@ -7,12 +7,12 @@ set_time_limit(0);
 
 use REDCap;
 
-include_once "Main.php";
-include_once "ParentArm.php";
-include_once "ChildArm.php";
-include_once "Relation.php";
-include_once "RelationalReport.php";
-include_once "SearchRelation.php";
+include_once __DIR__ . "/Main.php";
+include_once __DIR__ . "/ParentArm.php";
+include_once __DIR__ . "/ChildArm.php";
+include_once __DIR__ . "/Relation.php";
+include_once __DIR__ . "/RelationalReport.php";
+include_once __DIR__ . "/SearchRelation.php";
 
 
 define("PARENT_EVENT", "parent_event");
@@ -594,7 +594,7 @@ class ParentChild extends \ExternalModules\AbstractExternalModule
      * @param string $type
      * @return bool|array
      */
-    private function getChildEventRelation($eventId)
+    public function getChildEventRelation($eventId)
     {
         foreach ($this->getInstances() as $instance) {
             if ($instance[CHILD_EVENT] == $eventId) {
