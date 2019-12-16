@@ -47,7 +47,7 @@ if ($this->isOrphan()) {
         /**
          * once everything is loaded trigger this function
          */
-        window.addEventListener("load", ChildObject.injectParentRow(content, "<?php echo $this->getTopParentArm()->getRelation()->getTopForeignKey()  ?>"), true);
+        window.addEventListener("load", ChildObject.injectParentRow(content, "<?php echo $this->getParentArm()->getRelation()->getTopForeignKey()  ?>"), true);
     </script>
     <?php
 }
