@@ -496,6 +496,9 @@ class ParentChild extends \ExternalModules\AbstractExternalModule
              * if parent id is passed load its record
              */
             if (isset($_GET['parent'])) {
+                /**
+                 * set passed record as temp so can be selected by dropdown
+                 */
                 $this->getParentArm()->setTempRecordId(filter_var($_GET['parent'], FILTER_SANITIZE_NUMBER_INT));
 
                 $this->getParentArm()->setRecord(Main::getRecords($this->getParentArm()->getEventId(),
