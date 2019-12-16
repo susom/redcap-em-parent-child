@@ -496,6 +496,8 @@ class ParentChild extends \ExternalModules\AbstractExternalModule
              * if parent id is passed load its record
              */
             if (isset($_GET['parent'])) {
+                $this->getParentArm()->setTempRecordId(filter_var($_GET['parent'], FILTER_SANITIZE_NUMBER_INT));
+
                 $this->getParentArm()->setRecord(Main::getRecords($this->getParentArm()->getEventId(),
                     filter_var($_GET['parent'], FILTER_SANITIZE_NUMBER_INT)));
                 /**
@@ -551,12 +553,14 @@ class ParentChild extends \ExternalModules\AbstractExternalModule
                      */
                     $this->setTopParentRow("<div id='parent-row' data-parent-id='" . $parentRecordId . "'><a href='" . $this->getTopParentArm()->getUrl() . "'>Parent Record for this record is " . $this->getTopParentArm()->getDropDownList()[$parentRecordId] . "</a></div>");
                 } else {
-                    /**
-                     * set the URL for parent record
-                     */
-                    $this->getParentArm()->setUrl($parentRecordId);
+                    if (!$this->getParentArm()->getTempRecordId()) {
+                        /**
+                         * set the URL for parent record
+                         */
+                        $this->getParentArm()->setUrl($parentRecordId);
 
-                    $this->setParentRow("<div id='parent-row' data-parent-id='" . $parentRecordId . "'><a href='" . $this->getParentArm()->getUrl() . "'>Parent Record for this record is " . $this->getParentArm()->getDropDownList()[$parentRecordId] . "</a><a class='float-right' href='javascript:;'><img class='show-list' alt='Edit Parent' src='/redcap_v9.2.5/Resources/images/pencil.png'></a></div>");
+                        $this->setParentRow("<div id='parent-row' data-parent-id='" . $parentRecordId . "'><a href='" . $this->getParentArm()->getUrl() . "'>Parent Record for this record is " . $this->getParentArm()->getDropDownList()[$parentRecordId] . "</a><a class='float-right' href='javascript:;'><img class='show-list' alt='Edit Parent' src='/redcap_v9.2.5/Resources/images/pencil.png'></a></div>");
+                    }
                 }
             } else {
                 $this->setDirty(true);

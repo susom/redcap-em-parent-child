@@ -14,6 +14,14 @@ namespace Stanford\ParentChild;
         ChildObject.parentInputName = "<?php echo $this->getParentArm()->getRelation()->getForeignKey()  ?>";
     </script>
     <?php
+// in case we passed parent id but not saved yet. selected that record in the dropdown
+if ($this->getParentArm()->getTempRecordId()) {
+    ?>
+    <script>
+        ChildObject.tempRecordId = "<?php echo $this->getParentArm()->getTempRecordId()  ?>";
+    </script>
+    <?php
+}
 if ($this->getParentRow()) {
     ?>
     <script>

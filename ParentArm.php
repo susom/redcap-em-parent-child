@@ -7,6 +7,7 @@ namespace Stanford\ParentChild;
  * @package Stanford\ParentChild
  * @property int $eventId
  * @property int $armId
+ * @property int $tempRecordId
  * @property string $instrument
  * @property string $instrumentLabel
  * @property array $record
@@ -37,6 +38,8 @@ class ParentArm extends Main
     private $fields;
 
     private $instrumentLabel;
+
+    private $tempRecordId;
     /**
      * ParentArm constructor.
      * @param int $eventId
@@ -107,6 +110,23 @@ class ParentArm extends Main
             echo $e->getMessage();
         }
     }
+
+    /**
+     * @return int
+     */
+    public function getTempRecordId()
+    {
+        return $this->tempRecordId;
+    }
+
+    /**
+     * @param int $tempRecordId
+     */
+    public function setTempRecordId($tempRecordId)
+    {
+        $this->tempRecordId = $tempRecordId;
+    }
+
 
     /**
      * @return string

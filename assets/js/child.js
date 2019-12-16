@@ -2,6 +2,7 @@ ChildObject = {
     dropDownList: '',
     parentInputName: '',
     $originalParent: '',
+    tempRecordId: '',
     init: function () {
         jQuery(document).on("click", ".show-list", function () {
             if (confirm("Are you sure you want to edit this record parent?")) {
@@ -14,7 +15,7 @@ ChildObject = {
     generateDropDown: function (record) {
         var select = '<select name="' + this.parentInputName + '" required><option value="">Select ' + this.parentInputName + '</option>';
         for (var key in this.dropDownList) {
-            if (record != undefined && record == key) {
+            if (ChildObject.tempRecordId != '' && ChildObject.tempRecordId == key) {
                 select += "<option value='" + key + "' selected>" + this.dropDownList[key] + "</option>";
             } else {
                 select += "<option value='" + key + "'>" + this.dropDownList[key] + "</option>";
