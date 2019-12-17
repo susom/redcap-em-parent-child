@@ -222,9 +222,9 @@ Abstract class Main
         return APP_PATH_WEBROOT . "DataEntry/index.php?pid=$projectId&page=$name&id=$recordId&event_id=$eventId";
     }
 
-    public static function getRecordHomeURL($projectId, $armId, $recordId)
+    public static function getRecordHomeURL($projectId, $page, $eventId, $recordId)
     {
-        return APP_PATH_WEBROOT . "DataEntry/record_home.php?pid=$projectId&arm=$armId&id=$recordId";
+        return APP_PATH_WEBROOT . "DataEntry/index.php?pid=$projectId&page=$page&event_id=$eventId&id=$recordId";
     }
 
     public static function replaceRecordLabels($text, $row)

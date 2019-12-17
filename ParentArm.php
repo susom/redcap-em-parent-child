@@ -224,7 +224,8 @@ class ParentArm extends Main
         if (is_null($recordId)) {
             $recordId = $this->getNextId($this->getProjectId(), $this->getEventId());
         }
-        $this->url = Main::getRecordHomeURL($this->getProjectId(), $this->getArmId(), $recordId);
+        $this->url = Main::getRecordHomeURL($this->getProjectId(), $this->getInstrument(), $this->getEventId(),
+            $recordId);
     }
 
     /**

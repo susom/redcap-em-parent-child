@@ -64,7 +64,8 @@ try {
     <div class="row">
         <a class="btn btn-primary"
            href="<?php echo Main::getRecordHomeURL($module->getProjectId(),
-               $module->getSearchRelation()->getTopParentArm()->getArmId(), $id); ?>">View
+               $module->getSearchRelation()->getTopParentArm()->getInstrument(),
+               $module->getSearchRelation()->getTopParentArm()->getEventId(), $id); ?>">View
             Record</a>
     </div>
     <?php
