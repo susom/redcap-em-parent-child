@@ -28,7 +28,7 @@ class RelationalReport extends Main
         try {
             $this->setEventId($eventId);
             $this->setProjectId($projectId);
-            $this->setInstruments($this->getInstrumentNameViaEventId($this->getEventId()));
+            $this->setInstruments(Main::getInstrumentNameViaEventId($this->getEventId()));
 
             if ($children != false) {
                 foreach ($children as $child) {
@@ -60,12 +60,12 @@ class RelationalReport extends Main
     {
         if (!is_array($instruments)) {
             $temp = array();
-            $temp[$instruments] = $this->getInstrumentMenuDescription($instruments);
+            $temp[$instruments] = $this->getInstrumentMenuDescription($instruments, $this->getProjectId());
             $instruments = $temp;
         } else {
             $temp = array();
             foreach ($instruments as $instrument) {
-                $temp[$instrument] = $this->getInstrumentMenuDescription($instruments);
+                $temp[$instrument] = $this->getInstrumentMenuDescription($instruments, $this->getProjectId());
             }
             $instruments = $temp;
         }

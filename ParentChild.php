@@ -5,6 +5,7 @@ namespace Stanford\ParentChild;
 ini_set("memory_limit", "-1");
 set_time_limit(0);
 
+use function Aws\filter;
 use REDCap;
 
 include_once __DIR__ . "/Main.php";
@@ -614,7 +615,7 @@ class ParentChild extends \ExternalModules\AbstractExternalModule
     /**
      * @param string $path
      */
-    private function includeFile($path)
+    public function includeFile($path)
     {
         include_once $path;
     }
@@ -680,5 +681,23 @@ class ParentChild extends \ExternalModules\AbstractExternalModule
             }
         }
         return false;
+    }
+
+    public function redcap_every_page_top()
+    {
+        // in case we are loading record homepage load its the record children if existed
+        if (strpos($_SERVER['SCRIPT_NAME'], 'DataEntry/record_home') !== false) {
+            $this->setProjectId(filter_var($_GET['pid'], FILTER_SANITIZE_NUMBER_INT));
+
+            $this->setEventId(Main::getEventIdViaArmId(filter_var(filter_var($_GET['arm'], FILTER_SANITIZE_NUMBER_INT)),
+                $this->getProjectId()));
+
+            $this->setRecordId(filter_var($_GET['id'], FILTER_SANITIZE_STRING));
+            //create search object by defining parent event arm
+            $this->setSearchRelation(new SearchRelation($this->getEventId(), $this->getProjectId(), ''));
+
+            $this->includeFile("view/record/home.php");
+        }
+
     }
 }

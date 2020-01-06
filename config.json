@@ -27,7 +27,8 @@
   "permissions": [
     "redcap_data_entry_form",
     "redcap_every_page_top",
-    "redcap_add_edit_records_page"
+    "redcap_add_edit_records_page",
+    "redcap_data_entry_form_top"
   ],
   "project-settings": [
     {

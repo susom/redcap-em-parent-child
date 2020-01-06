@@ -48,7 +48,8 @@ Abstract class Main
             return false;
         }
     }
-    protected function getInstrumentNameViaEventId($eventId)
+
+    public static function getInstrumentNameViaEventId($eventId)
     {
 
         $sql = "SELECT * FROM redcap_events_forms WHERE event_id = $eventId";
@@ -84,10 +85,25 @@ Abstract class Main
         }
     }
 
-    protected function getInstrumentMenuDescription($name)
+    public static function getEventIdViaArmId($armNumber, $projectId)
     {
+        $sql = "SELECT arm_id  FROM redcap_events_arms WHERE arm_num = '$armNumber' AND project_id ='$projectId'";
 
-        $projectId = $this->getProjectId();
+        $q = db_query($sql);
+
+        if (db_num_rows($q) == 1) {
+            $row = db_fetch_assoc($q);
+            $sql = "SELECT event_id FROM redcap_events_metadata WHERE arm_id = $row[arm_id]";
+            $q = db_query($sql);
+            $row = db_fetch_assoc($q);
+            return $row['event_id'];
+        } else {
+            return false;
+        }
+    }
+
+    public static function getInstrumentMenuDescription($name, $projectId)
+    {
 
         $sql = "SELECT form_menu_description FROM redcap_metadata WHERE project_id = $projectId AND form_name = '$name' AND form_menu_description IS NOT NULL";
 

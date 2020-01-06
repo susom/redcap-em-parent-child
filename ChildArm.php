@@ -60,7 +60,8 @@ class ChildArm extends Main
             /**
              * set instrument label
              */
-            $this->setInstrumentLabel($this->getInstrumentMenuDescription($this->getInstrument()));
+            $this->setInstrumentLabel($this->getInstrumentMenuDescription($this->getInstrument(),
+                $this->getProjectId()));
 
 
             $this->setRecordId($this->getNextId($this->getProjectId(), $this->getEventId()));

@@ -14,7 +14,7 @@ ParentObject = {
             var event = "'" + urls[i]['childEvent'] + "'";
             var foreignKey = "'" + urls[i]['foreignKey'] + "'";
             var topParentRecordId = "'" + urls[i]['topParentRecordId'] + "'";
-            html += '<div class="btn-group nowrap"><button class="btn btn-primaryrc" id="submit-btn-saverecord" name="submit-btn-saverecord" onclick="dataEntrySubmit(this);return setTimeout(function() {' +
+            html += '<div class="btn-group nowrap"><button class="btn btn-primaryrc" id="submit-btn-savecontinue" name="submit-btn-savecontinue" onclick="dataEntrySubmit(this);return setTimeout(function() {' +
                 ' ParentObject.redirect(' + url + ');  }, 100)" style="margin-bottom:2px;font-size:13px !important;padding:6px 8px;" tabindex="0">Save & Add ' + urls[i]['label'] + '</button><button id="submit-btn-dropdown" title="More save options" class="btn btn-primaryrc btn-savedropdown dropdown-toggle" style="margin-bottom:2px;font-size:13px !important;padding:6px 8px;" tabindex="0" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" onclick="ParentObject.openChildDropdown(' + instrument + ');return false;">\n' +
                 '\t\t\t\t\t\t\t\t<span class="sr-only"></span>\n' +
                 '\t\t\t\t\t\t\t</button>';

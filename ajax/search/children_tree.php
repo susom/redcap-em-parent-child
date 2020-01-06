@@ -18,7 +18,7 @@ try {
 
 
     $childrenRecords = $module->getSearchRelation()->getChildrenRecords($children, $id, $topParentId);
-    if ($children != false) {
+    if ($children != false && !empty($childrenRecords)) {
         foreach ($children as $child) {
 
             $relation = new Relation($child);
@@ -98,7 +98,7 @@ try {
 
         }
     } else {
-        echo "<div class='alert-danger'>No defined children for $instrument</div>";
+        echo "<div class='row alert alert-danger'>No related records for this record!</div>";
     }
 } catch (\LogicException $e) {
     echo "<div class='alert-danger'>" . $e->getMessage() . "</div>";

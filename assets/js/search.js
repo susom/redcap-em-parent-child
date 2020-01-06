@@ -31,7 +31,7 @@ SearchObject = {
         /**
          * show parent tree
          */
-        jQuery(document).on("click", ".children-tree", function () {
+        jQuery(document).unbind('click').on("click", ".children-tree", function () {
             var instrument = jQuery(this).data('instrument');
             var event = jQuery(this).data('event');
             var id = jQuery(this).data('id');
@@ -43,6 +43,7 @@ SearchObject = {
             } else {
                 SearchObject.buildChildrenTree($elem, event, instrument, id, text, topParentId);
             }
+            return false;
         });
 
         /**

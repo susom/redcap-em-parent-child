@@ -60,13 +60,14 @@ class ParentArm extends Main
             /**
              * set instrument unique name
              */
-            $this->setInstrument($this->getInstrumentNameViaEventId($this->getEventId()));
+            $this->setInstrument(Main::getInstrumentNameViaEventId($this->getEventId()));
 
 
             /**
              * set instrument label
              */
-            $this->setInstrumentLabel($this->getInstrumentMenuDescription($this->getInstrument()));
+            $this->setInstrumentLabel($this->getInstrumentMenuDescription($this->getInstrument(),
+                $this->getProjectId()));
 
             /**
              * Set Arm ID
@@ -75,7 +76,7 @@ class ParentArm extends Main
             /**
              * set instrument label
              */
-            $this->getInstrumentMenuDescription($this->getInstrument());
+            $this->getInstrumentMenuDescription($this->getInstrument(), $this->getProjectId());
 
             if (!is_null($relation)) {
                 /**

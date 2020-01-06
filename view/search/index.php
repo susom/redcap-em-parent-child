@@ -1,3 +1,9 @@
+<?php
+// if this is called from record home page
+if (isset($this) AND !isset($module)) {
+    $module = $this;
+}
+?>
 <!doctype html>
 <html lang="en">
 <head>
