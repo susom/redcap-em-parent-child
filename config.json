@@ -81,6 +81,13 @@
           "type": "field-list"
         }
       ]
+    },
+    {
+      "key": "allowed_roles",
+      "name": "<b>Select the roles that will be able to see the relational tree. If nothing is selected ALL roles will be allowed.",
+      "required": false,
+      "repeatable": true,
+      "type": "user-role-list"
     }
   ]
 }

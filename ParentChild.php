@@ -45,6 +45,7 @@ define("TOP_PARENT_DISPLAY_LABEL", "top_parent_display_label");
  * @property string $addRecordURL
  * @property RelationalReport $relationalReport
  * @property SearchRelation $searchRelation
+ * @property array $roles
  */
 class ParentChild extends \ExternalModules\AbstractExternalModule
 {
@@ -126,6 +127,8 @@ class ParentChild extends \ExternalModules\AbstractExternalModule
 
     private $searchRelation;
 
+    private $roles;
+
     public function __construct()
     {
         try {
@@ -136,11 +139,318 @@ class ParentChild extends \ExternalModules\AbstractExternalModule
                 $this->setProjectId(filter_var($_GET['pid'], FILTER_SANITIZE_NUMBER_INT));
 
                 $this->setInstances();
+
+                # add allowed roles is defined
+                $this->setRoles();
             }
         } catch (\LogicException $e) {
             echo $e->getMessage();
         }
     }
+
+
+    /**
+     * @param int $project_id
+     * @param null|int $record
+     * @param int $instrument
+     * @param int $event_id
+     * @param null|int $group_id
+     * @param int $repeat_instance
+     */
+    public function redcap_data_entry_form(
+        $project_id,
+        $record = null,
+        $instrument,
+        $event_id,
+        $group_id = null,
+        $repeat_instance = 1
+    ) {
+
+        //define my event and instrument;
+        $this->setEventId($event_id);
+        $this->setInstrument($instrument);
+
+        $this->setRecord(Main::getRecords($this->getEventId(), $record));
+
+
+        //This event is parent of other children set the relation and init the these child object
+        $parent = $this->getParentEventRelation($event_id);
+        if ($parent !== false) {
+            foreach ($parent as $p) {
+
+                $relation = new Relation($p);
+
+                $child = new ChildArm($p[CHILD_EVENT], $project_id, $relation);
+                $this->setChildrenArms($child);
+
+            }
+
+            $this->setInjectElement(true);
+
+            $this->includeFile("view/parent.php");
+        }
+
+        //This event is child of another event set relation and parent
+        $child = $this->getChildEventRelation($event_id);
+        if ($child !== false) {
+            $relation = new Relation($child);
+
+            /**
+             * now see if foreign key is not available then fallback to parent
+             */
+            $fallbackId = array();
+            //no value in record for foreign key then lets limit dropdown to parent record if exists
+            if ($this->getRecord()[$record][$this->getEventId()][$relation->getForeignKey()] == "") {
+                if ($this->getRecord()[$record][$this->getEventId()][$relation->getTopForeignKey()] != "") {
+                    $temp = $this->getChildEventRelation($relation->getParentEventId());
+                    $fallback['record_id'] = $this->getRecord()[$record][$this->getEventId()][$relation->getTopForeignKey()];
+                    $fallback['field'] = $temp[CHILD_FOREIGN_KEY];
+                }
+            }
+
+            $this->setParentArm(new ParentArm($child[PARENT_EVENT], $project_id, $relation->getParentDisplayLabel(),
+                $relation, $fallback));
+
+            /**
+             * if parent id is passed load its record
+             */
+            if (isset($_GET['parent'])) {
+                /**
+                 * set passed record as temp so can be selected by dropdown
+                 */
+                $this->getParentArm()->setTempRecordId(filter_var($_GET['parent'], FILTER_SANITIZE_NUMBER_INT));
+
+                $this->getParentArm()->setRecord(Main::getRecords($this->getParentArm()->getEventId(),
+                    filter_var($_GET['parent'], FILTER_SANITIZE_NUMBER_INT)));
+                /**
+                 * if not parent record this this record is orphan and we need to mark it as dirty
+                 */
+                if (empty($this->getParentArm()->getRecord())) {
+                    $this->setOrphan(true);
+                }
+            }
+            /**
+             * in case we are editing child record directly them pull its parent
+             */
+            if (!empty($this->getRecord())) {
+                $parentRecordId = $this->getRecord()[$record][$this->getEventId()][$child[CHILD_FOREIGN_KEY]];
+
+                if ($parentRecordId != "") {
+                    $this->getParentArm()->setRecord(Main::getRecords($this->getParentArm()->getEventId(),
+                        $parentRecordId));
+                }
+                /**
+                 * if not parent record this this record is orphan and we need to mark it as dirty
+                 */
+                if (empty($this->getParentArm()->getRecord())) {
+                    $this->setOrphan(true);
+
+                    /**
+                     * if case no direct parent exists then use top parent
+                     */
+                    $parentRecordId = $this->getRecord()[$record][$this->getEventId()][$child[TOP_FOREIGN_KEY]];
+
+                    /**
+                     * for temp only we will create parent object for top parent. and create temp relation between current event and top parent.
+                     */
+                    $instance = array(
+                        PARENT_EVENT => $this->getFirstEventId(),
+                        CHILD_EVENT => $this->getEventId(),
+                        CHILD_FOREIGN_KEY => $this->getProjectSetting(TOP_PARENT_DISPLAY_LABEL)
+                    );
+
+                    $relation = new Relation($instance);
+
+                    $this->setTopParentArm(new ParentArm($this->getFirstEventId(), $project_id,
+                        $this->getProjectSetting(TOP_PARENT_DISPLAY_LABEL), $relation));
+                    $this->getTopParentArm()->setRecord(Main::getRecords($this->getFirstEventId(), $parentRecordId));
+                    $this->getTopParentArm()->setUrl($parentRecordId);
+                    /**
+                     * this will make sure record show up in correct position.
+                     */
+                    $this->getTopParentArm()->getRelation()->setTopForeignKey($child[TOP_FOREIGN_KEY]);
+
+                    /**
+                     * top parent row is not editable.
+                     */
+                    $this->setTopParentRow("<div id='parent-row' data-parent-id='" . $parentRecordId . "'><a href='" . $this->getTopParentArm()->getUrl() . "'>Parent Record for this record is " . $this->getTopParentArm()->getDropDownList()[$parentRecordId] . "</a></div>");
+                } else {
+                    if (!$this->getParentArm()->getTempRecordId()) {
+                        /**
+                         * set the URL for parent record
+                         */
+                        $this->getParentArm()->setUrl($parentRecordId);
+
+                        $this->setParentRow("<div id='parent-row' data-parent-id='" . $parentRecordId . "'><a href='" . $this->getParentArm()->getUrl() . "'>Parent Record for this record is " . $this->getParentArm()->getDropDownList()[$parentRecordId] . "</a><a class='float-right' href='javascript:;'><img class='show-list' alt='Edit Parent' src='/redcap_v9.2.5/Resources/images/pencil.png'></a></div>");
+                    }
+                }
+            } else {
+                $this->setDirty(true);
+            }
+
+
+            $this->includeFile("view/child.php");
+        }
+    }
+
+    /**
+     * Event could have multiple children
+     * @param int $eventId
+     * @param string $type
+     * @return bool|array
+     */
+    public function getParentEventRelation($eventId)
+    {
+        $result = array();
+        foreach ($this->getInstances() as $instance) {
+            if ($instance[PARENT_EVENT] == $eventId) {
+                $result[] = $instance;
+            }
+        }
+        if (!empty($result)) {
+            return $result;
+        }
+        return false;
+    }
+
+
+    /**
+     *
+     * @param int $eventId
+     * @param string $type
+     * @return bool|array
+     */
+    public function getChildEventRelation($eventId)
+    {
+        foreach ($this->getInstances() as $instance) {
+            if ($instance[CHILD_EVENT] == $eventId) {
+                return $instance;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * @param string $path
+     */
+    public function includeFile($path)
+    {
+        include_once $path;
+    }
+
+    public function getChildRecords($event, $recordId, $foreignKey, $topParentRecordId = null)
+    {
+        if ($_POST && isset($_POST['instrument']) && isset($_POST['event'])) {
+
+            $records = Main::searchRecords($event, $foreignKey, $recordId);
+
+            /**
+             * if no records found lets check the fall back parent if defined
+             */
+            if (empty($records)) {
+                $instance = $this->searchInstances($event, $foreignKey, CHILD_EVENT);
+                if ($instance[TOP_FOREIGN_KEY] != "" && $topParentRecordId != null) {
+                    $foreignKey = $instance[TOP_FOREIGN_KEY];
+                    return Main::searchRecords($event, $foreignKey, $topParentRecordId);
+                }
+            } else {
+                return $records;
+            }
+        } else {
+            throw new \LogicException("Data is missing");
+        }
+    }
+
+    /**
+     * this hook will force add record only for main using top parent
+     * @param int $project_id
+     * @param string $instrument
+     * @param int $event_id
+     */
+    public function redcap_add_edit_records_page($project_id, $instrument, $event_id)
+    {
+        $this->setProjectId($project_id);
+        $this->setEventId($this->getFirstEventId());
+        $this->setTopParentArm(new ParentArm($this->getEventId(), $this->getProjectId(), ''));
+        $this->getTopParentArm()->setUrl();
+        $this->includeFile("view/form.php");
+    }
+
+    public function limitInstrumentFieldsOnly($instrument, $item)
+    {
+        $id = $item[\REDCap::getRecordIdField()];
+        $instrumentFields = \REDCap::getFieldNames($instrument);
+        $temp = array();
+        foreach ($instrumentFields as $field) {
+            $temp[$field] = $item[$field];
+        }
+        /**
+         * make sure to get the primary record id
+         */
+        $temp[\REDCap::getRecordIdField()] = $id;
+        return $temp;
+    }
+
+    private function searchInstances($eventId, $foreignKey, $type)
+    {
+        foreach ($this->getInstances() as $instance) {
+            if ($instance[$type] == $eventId && $instance[CHILD_FOREIGN_KEY] == $foreignKey) {
+                return $instance;
+            }
+        }
+        return false;
+    }
+
+    public function redcap_every_page_top()
+    {
+        // in case we are loading record homepage load its the record children if existed
+        if (strpos($_SERVER['SCRIPT_NAME'], 'DataEntry/record_home') !== false && $this->isUserRoleAllowed()) {
+
+            $this->setProjectId(filter_var($_GET['pid'], FILTER_SANITIZE_NUMBER_INT));
+
+            $this->setEventId(Main::getEventIdViaArmId(filter_var(filter_var($_GET['arm'], FILTER_SANITIZE_NUMBER_INT)),
+                $this->getProjectId()));
+
+            $this->setRecordId(filter_var($_GET['id'], FILTER_SANITIZE_STRING));
+            //create search object by defining parent event arm
+            $this->setSearchRelation(new SearchRelation($this->getEventId(), $this->getProjectId(), ''));
+
+            $this->includeFile("view/record/home.php");
+        }
+    }
+
+    /**
+     * @return bool
+     */
+    private function isUserRoleAllowed()
+    {
+        if ($this->getRoles()) {
+            $user = end(REDCap::getUserRights());
+            if (in_array($user['role_id'], $this->getRoles())) {
+                return true;
+            }
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * @return array
+     */
+    public function getRoles()
+    {
+        return $this->roles;
+    }
+
+    /**
+     * @param array $roles
+     */
+    public function setRoles()
+    {
+        $roles = $this->getProjectSetting('allowed_roles', $this->getProjectId());
+        $this->roles = $roles;
+    }
+
 
     /**
      * @return SearchRelation
@@ -431,273 +741,4 @@ class ParentChild extends \ExternalModules\AbstractExternalModule
     }
 
 
-    /**
-     * @param int $project_id
-     * @param null|int $record
-     * @param int $instrument
-     * @param int $event_id
-     * @param null|int $group_id
-     * @param int $repeat_instance
-     */
-    public function redcap_data_entry_form(
-        $project_id,
-        $record = null,
-        $instrument,
-        $event_id,
-        $group_id = null,
-        $repeat_instance = 1
-    ) {
-
-        //define my event and instrument;
-        $this->setEventId($event_id);
-        $this->setInstrument($instrument);
-
-        $this->setRecord(Main::getRecords($this->getEventId(), $record));
-
-
-        //This event is parent of other children set the relation and init the these child object
-        $parent = $this->getParentEventRelation($event_id);
-        if ($parent !== false) {
-            foreach ($parent as $p) {
-
-                $relation = new Relation($p);
-
-                $child = new ChildArm($p[CHILD_EVENT], $project_id, $relation);
-                $this->setChildrenArms($child);
-
-            }
-
-            $this->setInjectElement(true);
-
-            $this->includeFile("view/parent.php");
-        }
-
-        //This event is child of another event set relation and parent
-        $child = $this->getChildEventRelation($event_id);
-        if ($child !== false) {
-            $relation = new Relation($child);
-
-            /**
-             * now see if foreign key is not available then fallback to parent
-             */
-            $fallbackId = array();
-            //no value in record for foreign key then lets limit dropdown to parent record if exists
-            if ($this->getRecord()[$record][$this->getEventId()][$relation->getForeignKey()] == "") {
-                if ($this->getRecord()[$record][$this->getEventId()][$relation->getTopForeignKey()] != "") {
-                    $temp = $this->getChildEventRelation($relation->getParentEventId());
-                    $fallback['record_id'] = $this->getRecord()[$record][$this->getEventId()][$relation->getTopForeignKey()];
-                    $fallback['field'] = $temp[CHILD_FOREIGN_KEY];
-                }
-            }
-
-            $this->setParentArm(new ParentArm($child[PARENT_EVENT], $project_id, $relation->getParentDisplayLabel(),
-                $relation, $fallback));
-
-            /**
-             * if parent id is passed load its record
-             */
-            if (isset($_GET['parent'])) {
-                /**
-                 * set passed record as temp so can be selected by dropdown
-                 */
-                $this->getParentArm()->setTempRecordId(filter_var($_GET['parent'], FILTER_SANITIZE_NUMBER_INT));
-
-                $this->getParentArm()->setRecord(Main::getRecords($this->getParentArm()->getEventId(),
-                    filter_var($_GET['parent'], FILTER_SANITIZE_NUMBER_INT)));
-                /**
-                 * if not parent record this this record is orphan and we need to mark it as dirty
-                 */
-                if (empty($this->getParentArm()->getRecord())) {
-                    $this->setOrphan(true);
-                }
-            }
-            /**
-             * in case we are editing child record directly them pull its parent
-             */
-            if (!empty($this->getRecord())) {
-                $parentRecordId = $this->getRecord()[$record][$this->getEventId()][$child[CHILD_FOREIGN_KEY]];
-
-                if ($parentRecordId != "") {
-                    $this->getParentArm()->setRecord(Main::getRecords($this->getParentArm()->getEventId(),
-                        $parentRecordId));
-                }
-                /**
-                 * if not parent record this this record is orphan and we need to mark it as dirty
-                 */
-                if (empty($this->getParentArm()->getRecord())) {
-                    $this->setOrphan(true);
-
-                    /**
-                     * if case no direct parent exists then use top parent
-                     */
-                    $parentRecordId = $this->getRecord()[$record][$this->getEventId()][$child[TOP_FOREIGN_KEY]];
-
-                    /**
-                     * for temp only we will create parent object for top parent. and create temp relation between current event and top parent.
-                     */
-                    $instance = array(
-                        PARENT_EVENT => $this->getFirstEventId(),
-                        CHILD_EVENT => $this->getEventId(),
-                        CHILD_FOREIGN_KEY => $this->getProjectSetting(TOP_PARENT_DISPLAY_LABEL)
-                    );
-
-                    $relation = new Relation($instance);
-
-                    $this->setTopParentArm(new ParentArm($this->getFirstEventId(), $project_id,
-                        $this->getProjectSetting(TOP_PARENT_DISPLAY_LABEL), $relation));
-                    $this->getTopParentArm()->setRecord(Main::getRecords($this->getFirstEventId(), $parentRecordId));
-                    $this->getTopParentArm()->setUrl($parentRecordId);
-                    /**
-                     * this will make sure record show up in correct position.
-                     */
-                    $this->getTopParentArm()->getRelation()->setTopForeignKey($child[TOP_FOREIGN_KEY]);
-
-                    /**
-                     * top parent row is not editable.
-                     */
-                    $this->setTopParentRow("<div id='parent-row' data-parent-id='" . $parentRecordId . "'><a href='" . $this->getTopParentArm()->getUrl() . "'>Parent Record for this record is " . $this->getTopParentArm()->getDropDownList()[$parentRecordId] . "</a></div>");
-                } else {
-                    if (!$this->getParentArm()->getTempRecordId()) {
-                        /**
-                         * set the URL for parent record
-                         */
-                        $this->getParentArm()->setUrl($parentRecordId);
-
-                        $this->setParentRow("<div id='parent-row' data-parent-id='" . $parentRecordId . "'><a href='" . $this->getParentArm()->getUrl() . "'>Parent Record for this record is " . $this->getParentArm()->getDropDownList()[$parentRecordId] . "</a><a class='float-right' href='javascript:;'><img class='show-list' alt='Edit Parent' src='/redcap_v9.2.5/Resources/images/pencil.png'></a></div>");
-                    }
-                }
-            } else {
-                $this->setDirty(true);
-            }
-
-
-            $this->includeFile("view/child.php");
-        }
-    }
-
-    /**
-     * Event could have multiple children
-     * @param int $eventId
-     * @param string $type
-     * @return bool|array
-     */
-    public function getParentEventRelation($eventId)
-    {
-        $result = array();
-        foreach ($this->getInstances() as $instance) {
-            if ($instance[PARENT_EVENT] == $eventId) {
-                $result[] = $instance;
-            }
-        }
-        if (!empty($result)) {
-            return $result;
-        }
-        return false;
-    }
-
-
-    /**
-     *
-     * @param int $eventId
-     * @param string $type
-     * @return bool|array
-     */
-    public function getChildEventRelation($eventId)
-    {
-        foreach ($this->getInstances() as $instance) {
-            if ($instance[CHILD_EVENT] == $eventId) {
-                return $instance;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * @param string $path
-     */
-    public function includeFile($path)
-    {
-        include_once $path;
-    }
-
-    public function getChildRecords($event, $recordId, $foreignKey, $topParentRecordId = null)
-    {
-        if ($_POST && isset($_POST['instrument']) && isset($_POST['event'])) {
-
-            $records = Main::searchRecords($event, $foreignKey, $recordId);
-
-            /**
-             * if no records found lets check the fall back parent if defined
-             */
-            if (empty($records)) {
-                $instance = $this->searchInstances($event, $foreignKey, CHILD_EVENT);
-                if ($instance[TOP_FOREIGN_KEY] != "" && $topParentRecordId != null) {
-                    $foreignKey = $instance[TOP_FOREIGN_KEY];
-                    return Main::searchRecords($event, $foreignKey, $topParentRecordId);
-                }
-            } else {
-                return $records;
-            }
-        } else {
-            throw new \LogicException("Data is missing");
-        }
-    }
-
-    /**
-     * this hook will force add record only for main using top parent
-     * @param int $project_id
-     * @param string $instrument
-     * @param int $event_id
-     */
-    public function redcap_add_edit_records_page($project_id, $instrument, $event_id)
-    {
-        $this->setProjectId($project_id);
-        $this->setEventId($this->getFirstEventId());
-        $this->setTopParentArm(new ParentArm($this->getEventId(), $this->getProjectId(), ''));
-        $this->getTopParentArm()->setUrl();
-        $this->includeFile("view/form.php");
-    }
-
-    public function limitInstrumentFieldsOnly($instrument, $item)
-    {
-        $id = $item[\REDCap::getRecordIdField()];
-        $instrumentFields = \REDCap::getFieldNames($instrument);
-        $temp = array();
-        foreach ($instrumentFields as $field) {
-            $temp[$field] = $item[$field];
-        }
-        /**
-         * make sure to get the primary record id
-         */
-        $temp[\REDCap::getRecordIdField()] = $id;
-        return $temp;
-    }
-
-    private function searchInstances($eventId, $foreignKey, $type)
-    {
-        foreach ($this->getInstances() as $instance) {
-            if ($instance[$type] == $eventId && $instance[CHILD_FOREIGN_KEY] == $foreignKey) {
-                return $instance;
-            }
-        }
-        return false;
-    }
-
-    public function redcap_every_page_top()
-    {
-        // in case we are loading record homepage load its the record children if existed
-        if (strpos($_SERVER['SCRIPT_NAME'], 'DataEntry/record_home') !== false) {
-            $this->setProjectId(filter_var($_GET['pid'], FILTER_SANITIZE_NUMBER_INT));
-
-            $this->setEventId(Main::getEventIdViaArmId(filter_var(filter_var($_GET['arm'], FILTER_SANITIZE_NUMBER_INT)),
-                $this->getProjectId()));
-
-            $this->setRecordId(filter_var($_GET['id'], FILTER_SANITIZE_STRING));
-            //create search object by defining parent event arm
-            $this->setSearchRelation(new SearchRelation($this->getEventId(), $this->getProjectId(), ''));
-
-            $this->includeFile("view/record/home.php");
-        }
-
-    }
 }
