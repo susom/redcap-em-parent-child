@@ -11,6 +11,13 @@ try {
     $text = filter_var($_POST["text"], FILTER_SANITIZE_STRING);
     $event = filter_var($_POST["event"], FILTER_SANITIZE_STRING);
 
+    if (is_null($event) && isset($_GET['arm'])) {
+        $arm = filter_var($_GET['arm'], FILTER_SANITIZE_NUMBER_INT);
+    }
+
+    if (is_null($event)) {
+        throw new \LogicException("Cant build the tree for this record");
+    }
     //create search object by defining parent event arm
     $module->setSearchRelation(new SearchRelation($event, $module->getProjectId(), ''));
     //check if there is any children for this event

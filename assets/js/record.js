@@ -3,7 +3,7 @@ Record = {
         var instrument = jQuery("#record_instrument_name").val();
         var event = jQuery("#record_event_id").val();
         var id = jQuery("#record_id").val();
-        var topParentId = jQuery("#record_id").val();
+        var topParentId = (jQuery("#record_id").val() != null ? null : jQuery("#record_id").val());
         var text = jQuery(this).data('text');
         var $elem = jQuery(this);
         Record.buildChildrenTree('', event, instrument, id, text, topParentId);
