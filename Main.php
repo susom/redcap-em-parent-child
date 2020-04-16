@@ -52,7 +52,7 @@ Abstract class Main
     public static function getInstrumentNameViaEventId($eventId)
     {
 
-        $sql = "SELECT * FROM redcap_events_forms WHERE event_id = $eventId limit 1 ";
+        $sql = "SELECT * FROM redcap_events_forms JOIN redcap_metadata on redcap_metadata.form_name = redcap_events_forms.form_name WHERE event_id = $eventId limit 1 ";
 
         $q = db_query($sql);
 

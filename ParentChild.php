@@ -416,6 +416,13 @@ class ParentChild extends \ExternalModules\AbstractExternalModule
             $this->setSearchRelation(new SearchRelation($this->getEventId(), $this->getProjectId(), ''));
 
             $this->includeFile("view/record/home.php");
+        }elseif (strpos($_SERVER['SCRIPT_NAME'], 'DataEntry/record_status_dashboard') !== false){
+
+            $this->setProjectId(filter_var($_GET['pid'], FILTER_SANITIZE_NUMBER_INT));
+            $this->setEventId($this->getFirstEventId());
+            $this->setTopParentArm(new ParentArm($this->getEventId(), $this->getProjectId(), ''));
+            $this->getTopParentArm()->setUrl();
+            $this->includeFile("view/form.php");
         }
     }
 
