@@ -45,7 +45,7 @@ try {
                 ?>
                 <div class="col-12">
                     <div class="row"><strong><?php echo $tempChild->getInstrumentLabel() ?>
-                            (<?php echo count($records) ?>)</strong></div>
+                            (<?php echo ($records ? count($records) : 0) ?>)</strong></div>
                     <div class="row">
                         <?php
                         if ($records) {
