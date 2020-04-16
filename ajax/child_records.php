@@ -26,7 +26,7 @@ try {
                 <th colspan="<?php echo count($headers) ?>"><?php echo $instrument ?> Records <a class="float-right"
                                                                                                  href="javascript:;"
                                                                                                  onclick="$('#instancesTablePopup').hide();"><img
-                                src="/redcap_v9.2.5/Resources/images/delete_box.gif">
+                                src="<?php echo APP_PATH_WEBROOT ?>Resources/images/delete_box.gif">
                     </a></th>
             </tr>
             <tr>

@@ -52,7 +52,7 @@ Abstract class Main
     public static function getInstrumentNameViaEventId($eventId)
     {
 
-        $sql = "SELECT * FROM redcap_events_forms WHERE event_id = $eventId";
+        $sql = "SELECT * FROM redcap_events_forms WHERE event_id = $eventId limit 1 ";
 
         $q = db_query($sql);
 
@@ -240,6 +240,9 @@ Abstract class Main
 
     public static function getRecordHomeURL($projectId, $page, $eventId, $recordId)
     {
+        if(is_array($page)){
+            $page = end($page);
+        }
         return APP_PATH_WEBROOT . "DataEntry/index.php?pid=$projectId&page=$page&event_id=$eventId&id=$recordId";
     }
 

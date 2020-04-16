@@ -281,7 +281,7 @@ class ParentChild extends \ExternalModules\AbstractExternalModule
                          */
                         $this->getParentArm()->setUrl($parentRecordId);
 
-                        $this->setParentRow("<div id='parent-row' data-parent-id='" . $parentRecordId . "'><a href='" . $this->getParentArm()->getUrl() . "'>Parent Record for this record is " . $this->getParentArm()->getDropDownList()[$parentRecordId] . "</a><a class='float-right' href='javascript:;'><img class='show-list' alt='Edit Parent' src='/redcap_v9.2.5/Resources/images/pencil.png'></a></div>");
+                        $this->setParentRow("<div id='parent-row' data-parent-id='" . $parentRecordId . "'><a href='" . $this->getParentArm()->getUrl() . "'>Parent Record for this record is " . $this->getParentArm()->getDropDownList()[$parentRecordId] . "</a><a class='float-right' href='javascript:;'><img class='show-list' alt='Edit Parent' src='" . APP_PATH_WEBROOT . "Resources/images/pencil.png'></a></div>");
                     }
                 }
             } else {

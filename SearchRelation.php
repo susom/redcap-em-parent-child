@@ -175,7 +175,7 @@ class SearchRelation extends Main
             foreach ($children as $child) {
                 if ($record[$child[CHILD_EVENT]][$child[CHILD_FOREIGN_KEY]] != "" && $record[$child[CHILD_EVENT]][$child[CHILD_FOREIGN_KEY]] == $recordsId) {
                     $result[$child[CHILD_EVENT]][$id] = $record;
-                } elseif ($record[$child[CHILD_EVENT]][$child[TOP_FOREIGN_KEY]] != "" && $record[$child[CHILD_EVENT]][$child[TOP_FOREIGN_KEY]] == $topParentId) {
+                } elseif ($record[$child[CHILD_EVENT]][$child[TOP_FOREIGN_KEY]] != "" && $record[$child[CHILD_EVENT]][$child[TOP_FOREIGN_KEY]] == $topParentId && !$recordsId) {
                     $result[$child[CHILD_EVENT]][$id] = $record;
                 }
             }
