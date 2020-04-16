@@ -21,6 +21,12 @@ ParentObject = {
                 '\t\t\t\t\t\t\t</button>';
             html += '<div class="dropdown-menu-child" id="' + urls[i]['childInstrument'] + '"><a class="dropdown-item" href="javascript:;" id="submit-btn-savecontinue" onclick="ParentObject.getAllChildRecords(' + instrument + ', ' + event + ', ' + foreignKey + ', ' + topParentRecordId + ');return false;">Show All ' + urls[i]['label'] + ' Records</a></div></div><br>';
         }
+
+        /**
+         * wrapping this to hide when new parent not saved at least one time.
+         * @type {string}
+         */
+        html = "<div id='children-buttons'>"+html+"</div>";
         jQuery("#" + this.submissionDiv).append(html);
     },
     redirect: function (url) {

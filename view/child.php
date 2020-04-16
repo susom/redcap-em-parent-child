@@ -40,6 +40,11 @@ if ($this->getParentRow()) {
          * once everything is loaded trigger this function
          */
         window.addEventListener("load", ChildObject.injectDropdown(), true);
+
+        /**
+         * hide children buttons section till this record is saved at least one time.
+         */
+        window.addEventListener("load", ChildObject.hideChildButtons(), true);
     </script>
     <?php
 }

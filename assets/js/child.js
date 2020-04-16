@@ -3,6 +3,7 @@ ChildObject = {
     parentInputName: '',
     $originalParent: '',
     tempRecordId: '',
+    submissionDiv: "__SUBMITBUTTONS__-div",
     init: function () {
         jQuery(document).on("click", ".show-list", function () {
             if (confirm("Are you sure you want to edit this record parent?")) {
@@ -29,6 +30,9 @@ ChildObject = {
         var $input = jQuery("[name='" + this.parentInputName + "']");
         select = ChildObject.generateDropDown();
         $input.replaceWith(select);
+    },
+    hideChildButtons: function(){
+        jQuery("#children-buttons").hide();
     },
     injectParentRow: function (content, name) {
         if (name == undefined) {
