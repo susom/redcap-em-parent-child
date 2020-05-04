@@ -404,7 +404,7 @@ class ParentChild extends \ExternalModules\AbstractExternalModule
     public function redcap_every_page_top()
     {
         // in case we are loading record homepage load its the record children if existed
-        if (strpos($_SERVER['SCRIPT_NAME'], 'DataEntry/record_home') !== false && $this->isUserRoleAllowed()) {
+        if (strpos($_SERVER['REQUEST_URI'], 'DataEntry/record_home') !== false && $this->isUserRoleAllowed()) {
 
             $this->setProjectId(filter_var($_GET['pid'], FILTER_SANITIZE_NUMBER_INT));
 
