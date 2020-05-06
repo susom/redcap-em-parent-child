@@ -284,7 +284,7 @@ class ParentChild extends \ExternalModules\AbstractExternalModule
 //                $this->setDirty(true);
 //            }
 
-            $this->includeFile("view/child.php");
+//            $this->includeFile("view/child.php");
         }
     }
 
@@ -426,11 +426,10 @@ class ParentChild extends \ExternalModules\AbstractExternalModule
      */
     private function isUserRoleAllowed()
     {
-        $this->emLog($this->getRoles());
-        if ($this->getRoles()) {
+        if ($this->getRoles() && !empty($this->getRoles())) {
             $users = \REDCap::getUserRights();
             $this->emLog($users);
-            $user = end($users);
+            $user = $users[USERID];
             $this->emLog($user);
             if (in_array($user['role_id'], $this->getRoles())) {
                 return true;
