@@ -14,7 +14,7 @@ include_once __DIR__ . "/ChildArm.php";
 include_once __DIR__ . "/Relation.php";
 include_once __DIR__ . "/RelationalReport.php";
 include_once __DIR__ . "/SearchRelation.php";
-
+include_once __DIR__ . "/emLoggerTrait.php";
 
 define("PARENT_EVENT", "parent_event");
 define("CHILD_EVENT", "child_event");
@@ -51,6 +51,7 @@ define("TOP_PARENT_DISPLAY_LABEL", "top_parent_display_label");
 class ParentChild extends \ExternalModules\AbstractExternalModule
 {
 
+    use emLoggerTrait;
     //TODO add new way to define relation without using config.json
 
     /**
@@ -193,6 +194,7 @@ class ParentChild extends \ExternalModules\AbstractExternalModule
              * now see if foreign key is not available then fallback to parent
              */
             $fallbackId = array();
+            $fallback = array();
             //no value in record for foreign key then lets limit dropdown to parent record if exists
             if ($this->getRecord()[$record][$this->getEventId()][$relation->getForeignKey()] == "") {
                 if ($this->getRecord()[$record][$this->getEventId()][$relation->getTopForeignKey()] != "") {
@@ -396,7 +398,8 @@ class ParentChild extends \ExternalModules\AbstractExternalModule
 
     public function redcap_every_page_top()
     {
-
+        $this->emLog(PAGE);
+        $this->emLog($this->isUserRoleAllowed());
         // in case we are loading record homepage load its the record children if existed
         if (strpos(PAGE, 'DataEntry/record_home') !== false && $this->isUserRoleAllowed()) {
 

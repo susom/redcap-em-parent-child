@@ -90,7 +90,7 @@ class ParentArm extends Main
                 /**
                  * if top parent defined then use it to shorten the dropdown list.
                  */
-                if (!is_null($fallback)) {
+                if (!is_null($fallback) && !empty($fallback)) {
                     $records = Main::searchRecords($this->getEventId(), $fallback['field'], $fallback['record_id']);
                 }
             }

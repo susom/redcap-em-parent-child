@@ -239,27 +239,51 @@ Abstract class Main
      */
     public static function searchRecords($eventId, $field, $value)
     {
+        global $Proj;
+        $projectId = $Proj->project_id;
+        $primaryKey = $Proj->table_pk;
+        $sql = "select * from redcap_data rd where project_id = $projectId and event_id IN ($eventId)";
+        $q = db_query($sql);
+        $recordId = '';
         $result = array();
-        /*$params = array(
-            'return_format' => 'array',
-            'events' => $eventId,
-            'filterLogic' => "[$field] = '$value'"
-        );*/
-        $params = array(
-            'return_format' => 'array',
-            'events' => $eventId
-        );
-        $records = REDCap::getData($params);
-        foreach ($records as $id => $record) {
-            if (isset($record[$eventId][$field]) && $record[$eventId][$field] == $value) {
-                $result[$id] = $record;
+        $record = array();
+        while ($row = db_fetch_assoc($q)) {
+            if ($recordId != $row['record']) {
+                if (!empty($record)) {
+                    if ($record[$field] == $value) {
+                        return array($recordId => $record);
+                    }
+                    $result[$recordId][$eventId] = $record;
+                    $record = array();
+                }
+                $record[$row['field_name']] = $row['value'];
+                $recordId = $record[$primaryKey] = $row['record'];
+            } else {
+                $record[$row['field_name']] = $row['value'];
             }
         }
-        if (empty($result)) {
-            return false;
-        } else {
-            return $result;
-        }
+
+//        $result = array();
+//        /*$params = array(
+//            'return_format' => 'array',
+//            'events' => $eventId,
+//            'filterLogic' => "[$field] = '$value'"
+//        );*/
+//        $params = array(
+//            'return_format' => 'array',
+//            'events' => $eventId
+//        );
+//        $records = REDCap::getData($params);
+//        foreach ($records as $id => $record) {
+//            if (isset($record[$eventId][$field]) && $record[$eventId][$field] == $value) {
+//                $result[$id] = $record;
+//            }
+//        }
+//        if (empty($result)) {
+//            return false;
+//        } else {
+//            return $result;
+//        }
 
     }
     /**
