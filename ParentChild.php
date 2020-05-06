@@ -172,120 +172,120 @@ class ParentChild extends \ExternalModules\AbstractExternalModule
         $repeat_instance = 1
     ) {
 
-//        //define my event and instrument;
-//        $this->setEventId($event_id);
-//        $this->setInstrument($instrument);
-//
-//        $this->setRecord(Main::getRecords($this->getEventId(), $record));
-//
-//
-//        //This event is parent of other children set the relation and init the these child object
-//        $parent = $this->getParentEventRelation($event_id);
-//        if ($parent !== false) {
-//            $this->includeFile("view/parent.php");
-//        }
-//
-//        //This event is child of another event set relation and parent
-//        $child = $this->getChildEventRelation($event_id);
-//        if ($child !== false) {
-//            $relation = new Relation($child);
-//
-//            /**
-//             * now see if foreign key is not available then fallback to parent
-//             */
-//            $fallbackId = array();
-//            $fallback = array();
-//            //no value in record for foreign key then lets limit dropdown to parent record if exists
-//            if ($this->getRecord()[$record][$this->getEventId()][$relation->getForeignKey()] == "") {
-//                if ($this->getRecord()[$record][$this->getEventId()][$relation->getTopForeignKey()] != "") {
-//                    $temp = $this->getChildEventRelation($relation->getParentEventId());
-//                    $fallback['record_id'] = $this->getRecord()[$record][$this->getEventId()][$relation->getTopForeignKey()];
-//                    $fallback['field'] = $temp[CHILD_FOREIGN_KEY];
-//                }
-//            }
-//
-//            $this->setParentArm(new ParentArm($child[PARENT_EVENT], $project_id, $relation->getParentDisplayLabel(),
-//                $relation, $fallback));
-//
-//            /**
-//             * if parent id is passed load its record
-//             */
-//            if (isset($_GET['parent'])) {
-//                /**
-//                 * set passed record as temp so can be selected by dropdown
-//                 */
-//                $this->getParentArm()->setTempRecordId(filter_var($_GET['parent'], FILTER_SANITIZE_NUMBER_INT));
-//
-//                $this->getParentArm()->setRecord(Main::getRecords($this->getParentArm()->getEventId(),
-//                    filter_var($_GET['parent'], FILTER_SANITIZE_NUMBER_INT)));
-//                /**
-//                 * if not parent record this this record is orphan and we need to mark it as dirty
-//                 */
-//                if (empty($this->getParentArm()->getRecord())) {
-//                    $this->setOrphan(true);
-//                }
-//            }
-//            /**
-//             * in case we are editing child record directly them pull its parent
-//             */
-//            if (!empty($this->getRecord())) {
-//                $parentRecordId = $this->getRecord()[$record][$this->getEventId()][$child[CHILD_FOREIGN_KEY]];
-//
-//                if ($parentRecordId != "") {
-//                    $this->getParentArm()->setRecord(Main::getRecords($this->getParentArm()->getEventId(),
-//                        $parentRecordId));
-//                }
-//                /**
-//                 * if not parent record this this record is orphan and we need to mark it as dirty
-//                 */
-//                if (empty($this->getParentArm()->getRecord())) {
-//                    $this->setOrphan(true);
-//
-//                    /**
-//                     * if case no direct parent exists then use top parent
-//                     */
-//                    $parentRecordId = $this->getRecord()[$record][$this->getEventId()][$child[TOP_FOREIGN_KEY]];
-//
-//                    /**
-//                     * for temp only we will create parent object for top parent. and create temp relation between current event and top parent.
-//                     */
-//                    $instance = array(
-//                        PARENT_EVENT => $this->getFirstEventId(),
-//                        CHILD_EVENT => $this->getEventId(),
-//                        CHILD_FOREIGN_KEY => $this->getProjectSetting(TOP_PARENT_DISPLAY_LABEL)
-//                    );
-//
-//                    $relation = new Relation($instance);
-//
-//                    $this->setTopParentArm(new ParentArm($this->getFirstEventId(), $project_id,
-//                        $this->getProjectSetting(TOP_PARENT_DISPLAY_LABEL), $relation));
-//                    $this->getTopParentArm()->setRecord(Main::getRecords($this->getFirstEventId(), $parentRecordId));
-//                    $this->getTopParentArm()->setUrl($parentRecordId);
-//                    /**
-//                     * this will make sure record show up in correct position.
-//                     */
-//                    $this->getTopParentArm()->getRelation()->setTopForeignKey($child[TOP_FOREIGN_KEY]);
-//
-//                    /**
-//                     * top parent row is not editable.
-//                     */
-//                    $this->setTopParentRow("<div id='parent-row' data-parent-id='" . $parentRecordId . "'><a href='" . $this->getTopParentArm()->getUrl() . "'>Parent Record for this record is " . $this->getTopParentArm()->getDropDownList()[$parentRecordId] . "</a></div>");
-//                } else {
-//                    if (!$this->getParentArm()->getTempRecordId()) {
-//                        /**
-//                         * set the URL for parent record
-//                         */
-//                        $this->getParentArm()->setUrl($parentRecordId);
-//
-//                        $this->setParentRow("<div id='parent-row' data-parent-id='" . $parentRecordId . "'><a href='" . $this->getParentArm()->getUrl() . "'>Parent Record for this record is " . $this->getParentArm()->getDropDownList()[$parentRecordId] . "</a><a class='float-right' href='javascript:;'><img class='show-list' alt='Edit Parent' src='" . APP_PATH_WEBROOT . "Resources/images/pencil.png'></a></div>");
-//                    }
-//                }
-//            } else {
-//                $this->setDirty(true);
-//            }
-//
-//            $this->includeFile("view/child.php");
-//        }
+        //define my event and instrument;
+        $this->setEventId($event_id);
+        $this->setInstrument($instrument);
+
+        $this->setRecord(Main::getRecords($this->getEventId(), $record));
+
+
+        //This event is parent of other children set the relation and init the these child object
+        $parent = $this->getParentEventRelation($event_id);
+        if ($parent !== false) {
+            $this->includeFile("view/parent.php");
+        }
+
+        //This event is child of another event set relation and parent
+        $child = $this->getChildEventRelation($event_id);
+        if ($child !== false) {
+            $relation = new Relation($child);
+
+            /**
+             * now see if foreign key is not available then fallback to parent
+             */
+            $fallbackId = array();
+            $fallback = array();
+            //no value in record for foreign key then lets limit dropdown to parent record if exists
+            if ($this->getRecord()[$record][$this->getEventId()][$relation->getForeignKey()] == "") {
+                if ($this->getRecord()[$record][$this->getEventId()][$relation->getTopForeignKey()] != "") {
+                    $temp = $this->getChildEventRelation($relation->getParentEventId());
+                    $fallback['record_id'] = $this->getRecord()[$record][$this->getEventId()][$relation->getTopForeignKey()];
+                    $fallback['field'] = $temp[CHILD_FOREIGN_KEY];
+                }
+            }
+
+            $this->setParentArm(new ParentArm($child[PARENT_EVENT], $project_id, $relation->getParentDisplayLabel(),
+                $relation, $fallback));
+
+            /**
+             * if parent id is passed load its record
+             */
+            if (isset($_GET['parent'])) {
+                /**
+                 * set passed record as temp so can be selected by dropdown
+                 */
+                $this->getParentArm()->setTempRecordId(filter_var($_GET['parent'], FILTER_SANITIZE_NUMBER_INT));
+
+                $this->getParentArm()->setRecord(Main::getRecords($this->getParentArm()->getEventId(),
+                    filter_var($_GET['parent'], FILTER_SANITIZE_NUMBER_INT)));
+                /**
+                 * if not parent record this this record is orphan and we need to mark it as dirty
+                 */
+                if (empty($this->getParentArm()->getRecord())) {
+                    $this->setOrphan(true);
+                }
+            }
+            /**
+             * in case we are editing child record directly them pull its parent
+             */
+            if (!empty($this->getRecord())) {
+                $parentRecordId = $this->getRecord()[$record][$this->getEventId()][$child[CHILD_FOREIGN_KEY]];
+
+                if ($parentRecordId != "") {
+                    $this->getParentArm()->setRecord(Main::getRecords($this->getParentArm()->getEventId(),
+                        $parentRecordId));
+                }
+                /**
+                 * if not parent record this this record is orphan and we need to mark it as dirty
+                 */
+                if (empty($this->getParentArm()->getRecord())) {
+                    $this->setOrphan(true);
+
+                    /**
+                     * if case no direct parent exists then use top parent
+                     */
+                    $parentRecordId = $this->getRecord()[$record][$this->getEventId()][$child[TOP_FOREIGN_KEY]];
+
+                    /**
+                     * for temp only we will create parent object for top parent. and create temp relation between current event and top parent.
+                     */
+                    $instance = array(
+                        PARENT_EVENT => $this->getFirstEventId(),
+                        CHILD_EVENT => $this->getEventId(),
+                        CHILD_FOREIGN_KEY => $this->getProjectSetting(TOP_PARENT_DISPLAY_LABEL)
+                    );
+
+                    $relation = new Relation($instance);
+
+                    $this->setTopParentArm(new ParentArm($this->getFirstEventId(), $project_id,
+                        $this->getProjectSetting(TOP_PARENT_DISPLAY_LABEL), $relation));
+                    $this->getTopParentArm()->setRecord(Main::getRecords($this->getFirstEventId(), $parentRecordId));
+                    $this->getTopParentArm()->setUrl($parentRecordId);
+                    /**
+                     * this will make sure record show up in correct position.
+                     */
+                    $this->getTopParentArm()->getRelation()->setTopForeignKey($child[TOP_FOREIGN_KEY]);
+
+                    /**
+                     * top parent row is not editable.
+                     */
+                    $this->setTopParentRow("<div id='parent-row' data-parent-id='" . $parentRecordId . "'><a href='" . $this->getTopParentArm()->getUrl() . "'>Parent Record for this record is " . $this->getTopParentArm()->getDropDownList()[$parentRecordId] . "</a></div>");
+                } else {
+                    if (!$this->getParentArm()->getTempRecordId()) {
+                        /**
+                         * set the URL for parent record
+                         */
+                        $this->getParentArm()->setUrl($parentRecordId);
+
+                        $this->setParentRow("<div id='parent-row' data-parent-id='" . $parentRecordId . "'><a href='" . $this->getParentArm()->getUrl() . "'>Parent Record for this record is " . $this->getParentArm()->getDropDownList()[$parentRecordId] . "</a><a class='float-right' href='javascript:;'><img class='show-list' alt='Edit Parent' src='" . APP_PATH_WEBROOT . "Resources/images/pencil.png'></a></div>");
+                    }
+                }
+            } else {
+                $this->setDirty(true);
+            }
+
+            $this->includeFile("view/child.php");
+        }
     }
 
     /**

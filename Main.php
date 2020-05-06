@@ -177,11 +177,7 @@ Abstract class Main
             $eventId = implode(",", $eventId);
         }
 
-        if (!is_null($id)) {
-            $sql = "select * from redcap_data rd where project_id = $projectId and event_id IN ($eventId) and record = '$id'";
-        } else {
-            $sql = "select * from redcap_data rd where project_id = $projectId and event_id IN ($eventId)";
-        }
+        $sql = "select * from redcap_data rd where project_id = $projectId and event_id IN ($eventId)";
         $q = db_query($sql);
         $recordId = '';
         $result = array();
@@ -200,6 +196,14 @@ Abstract class Main
         }
 
         $result[$recordId][$eventId] = $record;
+
+        if (!is_null($id)) {
+            foreach ($result as $key => $item) {
+                if ($id != $key) {
+                    unset($result[$key]);
+                }
+            }
+        }
 //
 //            $params = array(
 //                'return_format' => 'array',
