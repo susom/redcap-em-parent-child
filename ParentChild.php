@@ -188,24 +188,24 @@ class ParentChild extends \ExternalModules\AbstractExternalModule
         //This event is child of another event set relation and parent
         $child = $this->getChildEventRelation($event_id);
         if ($child !== false) {
-            $relation = new Relation($child);
-
-            /**
-             * now see if foreign key is not available then fallback to parent
-             */
-            $fallbackId = array();
-            $fallback = array();
-            //no value in record for foreign key then lets limit dropdown to parent record if exists
-            if ($this->getRecord()[$record][$this->getEventId()][$relation->getForeignKey()] == "") {
-                if ($this->getRecord()[$record][$this->getEventId()][$relation->getTopForeignKey()] != "") {
-                    $temp = $this->getChildEventRelation($relation->getParentEventId());
-                    $fallback['record_id'] = $this->getRecord()[$record][$this->getEventId()][$relation->getTopForeignKey()];
-                    $fallback['field'] = $temp[CHILD_FOREIGN_KEY];
-                }
-            }
-
-            $this->setParentArm(new ParentArm($child[PARENT_EVENT], $project_id, $relation->getParentDisplayLabel(),
-                $relation, $fallback));
+//            $relation = new Relation($child);
+//
+//            /**
+//             * now see if foreign key is not available then fallback to parent
+//             */
+//            $fallbackId = array();
+//            $fallback = array();
+//            //no value in record for foreign key then lets limit dropdown to parent record if exists
+//            if ($this->getRecord()[$record][$this->getEventId()][$relation->getForeignKey()] == "") {
+//                if ($this->getRecord()[$record][$this->getEventId()][$relation->getTopForeignKey()] != "") {
+//                    $temp = $this->getChildEventRelation($relation->getParentEventId());
+//                    $fallback['record_id'] = $this->getRecord()[$record][$this->getEventId()][$relation->getTopForeignKey()];
+//                    $fallback['field'] = $temp[CHILD_FOREIGN_KEY];
+//                }
+//            }
+//
+//            $this->setParentArm(new ParentArm($child[PARENT_EVENT], $project_id, $relation->getParentDisplayLabel(),
+//                $relation, $fallback));
 
 //            /**
 //             * if parent id is passed load its record
