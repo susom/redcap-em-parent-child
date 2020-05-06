@@ -172,22 +172,22 @@ class ParentChild extends \ExternalModules\AbstractExternalModule
         $repeat_instance = 1
     ) {
 
-        //define my event and instrument;
-        $this->setEventId($event_id);
-        $this->setInstrument($instrument);
-
-        $this->setRecord(Main::getRecords($this->getEventId(), $record));
-
-
-        //This event is parent of other children set the relation and init the these child object
-        $parent = $this->getParentEventRelation($event_id);
-        if ($parent !== false) {
-            $this->includeFile("view/parent.php");
-        }
-
-        //This event is child of another event set relation and parent
-        $child = $this->getChildEventRelation($event_id);
-        if ($child !== false) {
+//        //define my event and instrument;
+//        $this->setEventId($event_id);
+//        $this->setInstrument($instrument);
+//
+//        $this->setRecord(Main::getRecords($this->getEventId(), $record));
+//
+//
+//        //This event is parent of other children set the relation and init the these child object
+//        $parent = $this->getParentEventRelation($event_id);
+//        if ($parent !== false) {
+//            $this->includeFile("view/parent.php");
+//        }
+//
+//        //This event is child of another event set relation and parent
+//        $child = $this->getChildEventRelation($event_id);
+//        if ($child !== false) {
 //            $relation = new Relation($child);
 //
 //            /**
@@ -206,7 +206,7 @@ class ParentChild extends \ExternalModules\AbstractExternalModule
 //
 //            $this->setParentArm(new ParentArm($child[PARENT_EVENT], $project_id, $relation->getParentDisplayLabel(),
 //                $relation, $fallback));
-
+//
 //            /**
 //             * if parent id is passed load its record
 //             */
@@ -225,9 +225,9 @@ class ParentChild extends \ExternalModules\AbstractExternalModule
 //                    $this->setOrphan(true);
 //                }
 //            }
-            /**
-             * in case we are editing child record directly them pull its parent
-             */
+//            /**
+//             * in case we are editing child record directly them pull its parent
+//             */
 //            if (!empty($this->getRecord())) {
 //                $parentRecordId = $this->getRecord()[$record][$this->getEventId()][$child[CHILD_FOREIGN_KEY]];
 //
@@ -283,9 +283,9 @@ class ParentChild extends \ExternalModules\AbstractExternalModule
 //            } else {
 //                $this->setDirty(true);
 //            }
-
+//
 //            $this->includeFile("view/child.php");
-        }
+//        }
     }
 
     /**
