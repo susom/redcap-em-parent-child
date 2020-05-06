@@ -207,24 +207,24 @@ class ParentChild extends \ExternalModules\AbstractExternalModule
             $this->setParentArm(new ParentArm($child[PARENT_EVENT], $project_id, $relation->getParentDisplayLabel(),
                 $relation, $fallback));
 
-            /**
-             * if parent id is passed load its record
-             */
-            if (isset($_GET['parent'])) {
-                /**
-                 * set passed record as temp so can be selected by dropdown
-                 */
-                $this->getParentArm()->setTempRecordId(filter_var($_GET['parent'], FILTER_SANITIZE_NUMBER_INT));
-
-                $this->getParentArm()->setRecord(Main::getRecords($this->getParentArm()->getEventId(),
-                    filter_var($_GET['parent'], FILTER_SANITIZE_NUMBER_INT)));
-                /**
-                 * if not parent record this this record is orphan and we need to mark it as dirty
-                 */
-                if (empty($this->getParentArm()->getRecord())) {
-                    $this->setOrphan(true);
-                }
-            }
+//            /**
+//             * if parent id is passed load its record
+//             */
+//            if (isset($_GET['parent'])) {
+//                /**
+//                 * set passed record as temp so can be selected by dropdown
+//                 */
+//                $this->getParentArm()->setTempRecordId(filter_var($_GET['parent'], FILTER_SANITIZE_NUMBER_INT));
+//
+//                $this->getParentArm()->setRecord(Main::getRecords($this->getParentArm()->getEventId(),
+//                    filter_var($_GET['parent'], FILTER_SANITIZE_NUMBER_INT)));
+//                /**
+//                 * if not parent record this this record is orphan and we need to mark it as dirty
+//                 */
+//                if (empty($this->getParentArm()->getRecord())) {
+//                    $this->setOrphan(true);
+//                }
+//            }
             /**
              * in case we are editing child record directly them pull its parent
              */
@@ -453,7 +453,7 @@ class ParentChild extends \ExternalModules\AbstractExternalModule
     public function setRoles()
     {
         $roles = $this->getProjectSetting('allowed_roles', $this->getProjectId());
-        $this->roles = $roles;
+        $this->roles = array_filter($roles);
     }
 
 
