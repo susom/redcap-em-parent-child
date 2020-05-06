@@ -15,6 +15,7 @@ namespace Stanford\ParentChild;
  * @property string $url
  * @property array $record
  * @property Relation $relation
+ * @property \Project $project
  */
 class ChildArm extends Main
 {
@@ -36,6 +37,9 @@ class ChildArm extends Main
     private $recordId;
 
     private $armId;
+
+    private $project;
+
     /**
      * ChildArm constructor.
      * @param int $eventId
@@ -45,7 +49,11 @@ class ChildArm extends Main
     public function __construct($eventId, $projectId, $relation = null)
     {
         try {
+            global $Proj;
+
             $this->setEventId($eventId);
+
+            $this->setProject($Proj);
 
             /**
              * defined in main class
@@ -55,17 +63,15 @@ class ChildArm extends Main
             /**
              * set instrument unique name
              */
-            $this->setInstrument($this->getInstrumentNameViaEventId($this->getEventId()));
+            $this->setInstrument($this->getProject()->eventsForms[$this->getEventId()][0]);
 
             /**
              * set instrument label
              */
-            $this->setInstrumentLabel($this->getInstrumentMenuDescription($this->getInstrument(),
-                $this->getProjectId()));
+            $this->setInstrumentLabel($this->getProject()->forms[$this->getInstrument()]['menu']);
 
 
             $this->setRecordId($this->getNextId($this->getProjectId(), $this->getEventId()));
-
 
             if (!is_null($relation)) {
                 /**
@@ -228,5 +234,21 @@ class ChildArm extends Main
     public function setButton($button)
     {
         $this->button = $button;
+    }
+
+    /**
+     * @return \Project
+     */
+    public function getProject()
+    {
+        return $this->project;
+    }
+
+    /**
+     * @param \Project $project
+     */
+    public function setProject(\Project $project)
+    {
+        $this->project = $project;
     }
 }

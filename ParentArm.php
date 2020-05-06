@@ -14,7 +14,8 @@ namespace Stanford\ParentChild;
  * @property array $dropDownList
  * @property string $url
  * @property Relation $relation
- * @property Array $fields
+ * @property array $fields
+ * @property \Project $project
  */
 class ParentArm extends Main
 {
@@ -40,6 +41,9 @@ class ParentArm extends Main
     private $instrumentLabel;
 
     private $tempRecordId;
+
+    private $project;
+
     /**
      * ParentArm constructor.
      * @param int $eventId
@@ -50,6 +54,10 @@ class ParentArm extends Main
     public function __construct($eventId, $projectId, $parentDisplayLabel, $relation = null, $fallback = null)
     {
         try {
+            global $Proj;
+
+            $this->setProject($Proj);
+
             $this->setEventId($eventId);
 
             /**
@@ -60,23 +68,18 @@ class ParentArm extends Main
             /**
              * set instrument unique name
              */
-            $this->setInstrument(Main::getInstrumentNameViaEventId($this->getEventId()));
+            $this->setInstrument($this->getProject()->eventsForms[$this->getEventId()][0]);
 
 
             /**
              * set instrument label
              */
-            $this->setInstrumentLabel($this->getInstrumentMenuDescription($this->getInstrument(),
-                $this->getProjectId()));
+            $this->setInstrumentLabel($this->getProject()->forms[$this->getInstrument()]['menu']);
 
             /**
              * Set Arm ID
              */
-            $this->setArmId($this->getArmIdViaEventId($this->getEventId()));
-            /**
-             * set instrument label
-             */
-            $this->getInstrumentMenuDescription($this->getInstrument(), $this->getProjectId());
+            $this->setArmId(Main::getArmIdViaEventId($this->getEventId()));
 
             if (!is_null($relation)) {
                 /**
@@ -291,6 +294,22 @@ class ParentArm extends Main
     public function setEventId($eventId)
     {
         $this->eventId = $eventId;
+    }
+
+    /**
+     * @return \Project
+     */
+    public function getProject()
+    {
+        return $this->project;
+    }
+
+    /**
+     * @param \Project $project
+     */
+    public function setProject(\Project $project)
+    {
+        $this->project = $project;
     }
 
 

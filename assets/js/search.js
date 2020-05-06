@@ -1,4 +1,6 @@
 SearchObject = {
+    childThreeURL: '',
+    showRecordURL: '',
     init: function () {
 
         $body = $("body");

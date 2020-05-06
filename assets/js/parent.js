@@ -1,5 +1,6 @@
 ParentObject = {
     recordId: '',
+    childRecordsURL: '',
     submissionDiv: "__SUBMITBUTTONS__-div",
     init: function () {
         jQuery(document).on("click", ".clickable-row", function () {
@@ -16,10 +17,8 @@ ParentObject = {
             var topParentRecordId = "'" + urls[i]['topParentRecordId'] + "'";
             var action = "submit-btn-savecontinue"
             html += '<div class="btn-group nowrap"><button class="btn btn-primaryrc" id="submit-btn-savecontinue" name="submit-btn-savecontinue" onclick="return setTimeout(function() {' +
-                ' ParentObject.redirect(' + url + ');  }, 100)" style="margin-bottom:2px;font-size:13px !important;padding:6px 8px;" tabindex="0">Add ' + urls[i]['label'] + '</button><button id="submit-btn-dropdown" title="More save options" class="btn btn-primaryrc btn-savedropdown dropdown-toggle" style="margin-bottom:2px;font-size:13px !important;padding:6px 8px;" tabindex="0" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" onclick="ParentObject.openChildDropdown(' + instrument + ');return false;">\n' +
-                '\t\t\t\t\t\t\t\t<span class="sr-only"></span>\n' +
-                '\t\t\t\t\t\t\t</button>';
-            html += '<div class="dropdown-menu-child" id="' + urls[i]['childInstrument'] + '"><a class="dropdown-item" href="javascript:;" id="submit-btn-savecontinue" onclick="ParentObject.getAllChildRecords(' + instrument + ', ' + event + ', ' + foreignKey + ', ' + topParentRecordId + ');return false;">Show All ' + urls[i]['label'] + ' Records</a></div></div><br>';
+                ' ParentObject.redirect(' + url + ');  }, 100)" style="margin-bottom:2px;font-size:13px !important;padding:6px 8px;" tabindex="0">Add ' + urls[i]['label'] + '</button>';
+            html += '</div><br>';
         }
 
         /**
@@ -40,7 +39,7 @@ ParentObject = {
     },
     getAllChildRecords: function (instrument, event, foreignKey, topParentRecordId) {
         jQuery.ajax({
-            'url': jQuery("#get-child-records-url").val(),
+            'url': ParentObject.childRecordsURL,
             'data': {
                 instrument: instrument,
                 event: event,

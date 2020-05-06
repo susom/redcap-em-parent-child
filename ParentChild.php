@@ -136,6 +136,7 @@ class ParentChild extends \ExternalModules\AbstractExternalModule
         try {
             parent::__construct();
 
+            global $Proj;
 
             if ($_GET && $_GET['pid'] != null) {
                 $this->setProjectId(filter_var($_GET['pid'], FILTER_SANITIZE_NUMBER_INT));
@@ -145,7 +146,7 @@ class ParentChild extends \ExternalModules\AbstractExternalModule
                 # add allowed roles is defined
                 $this->setRoles();
 
-                $this->setProject(new \Project($this->getProjectId()));
+                $this->setProject($Proj);
             }
         } catch (\LogicException $e) {
             echo $e->getMessage();
@@ -180,17 +181,6 @@ class ParentChild extends \ExternalModules\AbstractExternalModule
         //This event is parent of other children set the relation and init the these child object
         $parent = $this->getParentEventRelation($event_id);
         if ($parent !== false) {
-            foreach ($parent as $p) {
-
-                $relation = new Relation($p);
-
-                $child = new ChildArm($p[CHILD_EVENT], $project_id, $relation);
-                $this->setChildrenArms($child);
-
-            }
-
-            $this->setInjectElement(true);
-
             $this->includeFile("view/parent.php");
         }
 
@@ -291,7 +281,6 @@ class ParentChild extends \ExternalModules\AbstractExternalModule
             } else {
                 $this->setDirty(true);
             }
-
 
             $this->includeFile("view/child.php");
         }

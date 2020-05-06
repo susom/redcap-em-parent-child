@@ -169,34 +169,67 @@ Abstract class Main
      */
     public static function getRecords($eventId, $id = null)
     {
-        $params = array(
-            'return_format' => 'array',
-            'events' => $eventId
-        );
-        /*if (!is_null($id)) {
-            $idField = REDCap::getRecordIdField();
-            $params = array(
-                'return_format' => 'array',
-                'events' => $eventId,
-                'filterLogic' => "[$idField] = '$id'"
-            );
-        } else {
-            $params = array(
-                'return_format' => 'array',
-                'events' => $eventId
-            );
-        }*/
+        global $Proj;
+        $projectId = $Proj->project_id;
+        $primaryKey = $Proj->table_pk;
 
-        $records = REDCap::getData($params);
-        if ($id == null) {
-            return $records;
+        if (is_array($eventId)) {
+            $eventId = implode(",", $eventId);
+        }
+
+        if (!is_null($id)) {
+            $sql = "select * from redcap_data rd where project_id = $projectId and event_id IN ($eventId) and record = '$id'";
         } else {
-            foreach ($records as $recordId => $record) {
-                if ($recordId == $id) {
-                    return array($id => $record);
+            $sql = "select * from redcap_data rd where project_id = $projectId and event_id IN ($eventId)";
+        }
+        $q = db_query($sql);
+        $recordId = '';
+        $result = array();
+        $record = array();
+        while ($row = db_fetch_assoc($q)) {
+            if ($recordId != $row['record']) {
+                if (!empty($record)) {
+                    $result[$recordId][$eventId] = $record;
+                    $record = array();
                 }
+                $record[$row['field_name']] = $row['value'];
+                $recordId = $record[$primaryKey] = $row['record'];
+            } else {
+                $record[$row['field_name']] = $row['value'];
             }
         }
+
+        $result[$recordId][$eventId] = $record;
+//
+//            $params = array(
+//                'return_format' => 'array',
+//                'events' => $eventId
+//            );
+//            /*if (!is_null($id)) {
+//                $idField = REDCap::getRecordIdField();
+//                $params = array(
+//                    'return_format' => 'array',
+//                    'events' => $eventId,
+//                    'filterLogic' => "[$idField] = '$id'"
+//                );
+//            } else {
+//                $params = array(
+//                    'return_format' => 'array',
+//                    'events' => $eventId
+//                );
+//            }*/
+//
+//        $records = REDCap::getData($params);
+//        if ($id == null) {
+//            return $records;
+//        } else {
+//            foreach ($records as $recordId => $record) {
+//                if ($recordId == $id) {
+//                    return array($id => $record);
+//                }
+//            }
+//        }
+        return $result;
     }
 
     /**
