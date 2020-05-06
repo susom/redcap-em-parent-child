@@ -11,6 +11,7 @@ namespace Stanford\ParentChild;
  * @property int $eventId
  * @property int $projectId
  * @property array $instruments
+ * @property \Project $project;
  */
 class RelationalReport extends Main
 {
@@ -23,12 +24,16 @@ class RelationalReport extends Main
 
     private $instruments;
 
+    private $project;
+
     public function __construct($projectId, $eventId, $children)
     {
         try {
+            global $Proj;
+            $this->setProject($Proj);
             $this->setEventId($eventId);
             $this->setProjectId($projectId);
-            $this->setInstruments(Main::getInstrumentNameViaEventId($this->getEventId()));
+            $this->setInstruments($this->getProject()->eventsForms[$this->getEventId()][0]);
 
             if ($children != false) {
                 foreach ($children as $child) {
@@ -60,12 +65,12 @@ class RelationalReport extends Main
     {
         if (!is_array($instruments)) {
             $temp = array();
-            $temp[$instruments] = $this->getInstrumentMenuDescription($instruments, $this->getProjectId());
+            $temp[$instruments] = $this->getProject()->forms[$instruments]['menu'];
             $instruments = $temp;
         } else {
             $temp = array();
             foreach ($instruments as $instrument) {
-                $temp[$instrument] = $this->getInstrumentMenuDescription($instruments, $this->getProjectId());
+                $temp[$instrument] = $this->getProject()->forms[$instrument]['menu'];
             }
             $instruments = $temp;
         }
@@ -125,4 +130,21 @@ class RelationalReport extends Main
     {
         require "view/report/card.php";
     }
+
+    /**
+     * @return \Project
+     */
+    public function getProject(): \Project
+    {
+        return $this->project;
+    }
+
+    /**
+     * @param \Project $project
+     */
+    public function setProject(\Project $project): void
+    {
+        $this->project = $project;
+    }
+
 }

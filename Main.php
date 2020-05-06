@@ -70,16 +70,13 @@ Abstract class Main
 
     public function getArmIdViaEventId($eventId)
     {
-        $sql = "SELECT arm_id FROM redcap_events_metadata WHERE event_id = $eventId";
+        $sql = "SELECT a.arm_num as arm_number FROM redcap_events_metadata m JOIN redcap_events_arms a on m.arm_id = a.arm_id WHERE event_id $eventId";
 
         $q = db_query($sql);
 
         if (db_num_rows($q) == 1) {
             $row = db_fetch_assoc($q);
-            $sql = "SELECT arm_num FROM redcap_events_arms WHERE arm_id = $row[arm_id]";
-            $q = db_query($sql);
-            $row = db_fetch_assoc($q);
-            return $row['arm_num'];
+            return $row['arm_number'];
         } else {
             return false;
         }

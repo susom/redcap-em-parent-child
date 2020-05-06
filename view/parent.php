@@ -4,7 +4,7 @@
 namespace Stanford\ParentChild;
 
 /** @var \Stanford\ParentChild\ParentChild $this */
-$instrument = Main::getInstrumentNameViaEventId($this->getEventId());
+$instrument = $this->getProject()->eventsForms[$this->getEventId()][0];
 ?>
     <script src="<?php echo $this->getUrl('assets/js/record.js') ?>"></script>
     <script src="<?php echo $this->getUrl('assets/js/search.js') ?>"></script>

@@ -176,14 +176,14 @@ class ParentChild extends \ExternalModules\AbstractExternalModule
         $this->setEventId($event_id);
         $this->setInstrument($instrument);
 
-        //       $this->setRecord(Main::getRecords($this->getEventId(), $record));
+        $this->setRecord(Main::getRecords($this->getEventId(), $record));
 
 
         //This event is parent of other children set the relation and init the these child object
-//        $parent = $this->getParentEventRelation($event_id);
-//        if ($parent !== false) {
-//            $this->includeFile("view/parent.php");
-//        }
+        $parent = $this->getParentEventRelation($event_id);
+        if ($parent !== false) {
+            $this->includeFile("view/parent.php");
+        }
 
         //This event is child of another event set relation and parent
         $child = $this->getChildEventRelation($event_id);
