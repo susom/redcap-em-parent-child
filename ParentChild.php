@@ -46,6 +46,7 @@ define("TOP_PARENT_DISPLAY_LABEL", "top_parent_display_label");
  * @property RelationalReport $relationalReport
  * @property SearchRelation $searchRelation
  * @property array $roles
+ * @property \Project $project
  */
 class ParentChild extends \ExternalModules\AbstractExternalModule
 {
@@ -129,6 +130,7 @@ class ParentChild extends \ExternalModules\AbstractExternalModule
 
     private $roles;
 
+    private $project;
     public function __construct()
     {
         try {
@@ -142,6 +144,8 @@ class ParentChild extends \ExternalModules\AbstractExternalModule
 
                 # add allowed roles is defined
                 $this->setRoles();
+
+                $this->setProject(new \Project($this->getProjectId()));
             }
         } catch (\LogicException $e) {
             echo $e->getMessage();
@@ -403,20 +407,21 @@ class ParentChild extends \ExternalModules\AbstractExternalModule
 
     public function redcap_every_page_top()
     {
+
         // in case we are loading record homepage load its the record children if existed
-        if (strpos($_SERVER['REQUEST_URI'], 'DataEntry/record_home') !== false && $this->isUserRoleAllowed()) {
+        if (strpos(PAGE, 'DataEntry/record_home') !== false && $this->isUserRoleAllowed()) {
 
             $this->setProjectId(filter_var($_GET['pid'], FILTER_SANITIZE_NUMBER_INT));
 
-            $this->setEventId(Main::getEventIdViaArmId(filter_var(filter_var($_GET['arm'], FILTER_SANITIZE_NUMBER_INT)),
-                $this->getProjectId()));
+            $this->setEventId($this->getProject()->getFirstEventIdArm(filter_var($_GET['arm'],
+                FILTER_SANITIZE_NUMBER_INT)));
 
             $this->setRecordId(filter_var($_GET['id'], FILTER_SANITIZE_STRING));
             //create search object by defining parent event arm
             $this->setSearchRelation(new SearchRelation($this->getEventId(), $this->getProjectId(), ''));
 
             $this->includeFile("view/record/home.php");
-        }elseif (strpos($_SERVER['SCRIPT_NAME'], 'DataEntry/record_status_dashboard') !== false){
+        } elseif (strpos(PAGE, 'DataEntry/record_status_dashboard') !== false) {
 
             $this->setProjectId(filter_var($_GET['pid'], FILTER_SANITIZE_NUMBER_INT));
             $this->setEventId($this->getFirstEventId());
@@ -747,5 +752,19 @@ class ParentChild extends \ExternalModules\AbstractExternalModule
         $this->childRelation = $childRelation;
     }
 
+    /**
+     * @return \Project
+     */
+    public function getProject()
+    {
+        return $this->project;
+    }
 
+    /**
+     * @param \Project $project
+     */
+    public function setProject(\Project $project)
+    {
+        $this->project = $project;
+    }
 }
