@@ -428,9 +428,7 @@ class ParentChild extends \ExternalModules\AbstractExternalModule
     {
         if ($this->getRoles() && !empty($this->getRoles())) {
             $users = \REDCap::getUserRights();
-            $this->emLog($users);
             $user = $users[USERID];
-            $this->emLog($user);
             if (in_array($user['role_id'], $this->getRoles())) {
                 return true;
             }
