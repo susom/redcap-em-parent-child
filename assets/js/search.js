@@ -155,9 +155,13 @@ SearchObject = {
                         }
                         html += '</div>';
                         var label = Record.instrumentLabel;
-                        var container = "<h4>Related " + label + " records</h4><div class='row'><div id='list-container' class='mt-2 col-5'>" + html + "</div><div class='col-5'><div id='record-container'></div></div></div>"
+                        if ($elem != undefined) {
+                            $elem.closest("li").append(html);
+                        } else {
+                            var container = "<h4>Related " + label + " records</h4><div class='row'><div id='list-container' class='mt-2 col-5'>" + html + "</div><div class='col-5'><div id='record-container'></div></div></div>"
+                            jQuery(container).insertAfter("#event_grid_table")
+                        }
 
-                        jQuery(container).insertAfter("#event_grid_table")
                     } else {
                         if ($elem != undefined) {
                             $elem.closest("li").append('<div class="row">No child records found</div>');
