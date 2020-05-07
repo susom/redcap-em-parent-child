@@ -25,7 +25,7 @@ try {
     $childrenRecords = $module->getSearchRelation()->getChildrenRecords($children, $id, $topParentId);
     $result = array();
     $primaryKey = $module->getProject()->table_pk;
-    if ($children != false && !empty($childrenRecords)) {
+    if ($children != false) {
         foreach ($children as $child) {
 
             $relation = new Relation($child);
@@ -34,7 +34,7 @@ try {
             $tempChild = new ChildArm($child[CHILD_EVENT], $module->getProjectId(), $relation);
 
             //get child records related to parent id
-            if (isset($childrenRecords[$child[CHILD_EVENT]])) {
+            if (!empty($childrenRecords) && isset($childrenRecords[$child[CHILD_EVENT]])) {
                 $records = $childrenRecords[$child[CHILD_EVENT]];
             } else {
                 $records = false;
@@ -66,11 +66,8 @@ try {
             if ($records) {
                 foreach ($records as $record) {
                     $item = $record[$tempChild->getEventId()];
-
-                    if ($childAsParent != false) {
-                        $label = Main::replaceRecordLabels($childAsParent[0][PARENT_DISPLAY_LABEL],
-                            $item);
-                    } else {
+                    $label = Main::replaceRecordLabels($child[PARENT_DISPLAY_LABEL], $item);
+                    if ($label == false) {
                         $label = $module->limitInstrumentFieldsOnly($tempChild->getInstrument(), $item);
                     }
 
@@ -78,7 +75,7 @@ try {
                         'id' => $item[$primaryKey],
                         'instrument' => $tempChild->getInstrument(),
                         'event_id' => $tempChild->getEventId(),
-                        'label' => $childAsParent != false ? $label : implode(", ", $item),
+                        'label' => !is_array($label) ? $label : implode(", ", $label),
                         'topParentId' => $item[$tempChild->getRelation()->getForeignKey()],
                         'url' => Main::getRecordHomeURL($module->getProjectId(), $tempChild->getInstrument(),
                             $tempChild->getEventId(), $item[$primaryKey])

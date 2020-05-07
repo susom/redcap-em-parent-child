@@ -373,16 +373,16 @@ class ParentChild extends \ExternalModules\AbstractExternalModule
 
     public function limitInstrumentFieldsOnly($instrument, $item)
     {
-        $id = $item[\REDCap::getRecordIdField()];
-        $instrumentFields = \REDCap::getFieldNames($instrument);
+        $id = $item[$this->getProject()->table_pk];
+        $instrumentFields = $this->getProject()->forms[$instrument]['fields'];
         $temp = array();
-        foreach ($instrumentFields as $field) {
-            $temp[$field] = $item[$field];
+        foreach ($instrumentFields as $key => $field) {
+            $temp[$field] = $item[$key];
         }
         /**
          * make sure to get the primary record id
          */
-        $temp[\REDCap::getRecordIdField()] = $id;
+        $temp[$this->getProject()->table_pk] = $id;
         return $temp;
     }
 

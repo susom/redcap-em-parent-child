@@ -180,9 +180,10 @@ Abstract class Main
         $result = array();
         $record = array();
         while ($row = db_fetch_assoc($q)) {
+            $e = $row['event_id'];
             if ($recordId != $row['record']) {
                 if (!empty($record)) {
-                    $result[$recordId][$eventId] = $record;
+                    $result[$recordId][$e] = $record;
                     $record = array();
                 }
                 $record[$row['field_name']] = $row['value'];
@@ -192,7 +193,7 @@ Abstract class Main
             }
         }
 
-        $result[$recordId][$eventId] = $record;
+        $result[$recordId][$e] = $record;
 
         if (!is_null($id)) {
             foreach ($result as $key => $item) {
@@ -306,15 +307,21 @@ Abstract class Main
 
     public static function replaceRecordLabels($text, $row)
     {
+        $origin = $text;
         preg_match_all("/\[(.*?)\]/", $text, $matches);
         foreach ($matches[1] as $match) {
             if (isset($row[$match])) {
                 $text = str_replace($match, $row[$match], $text);
             }
         }
-        $text = str_replace("]", "", $text);
-        $text = str_replace("[", "", $text);
+        if ($origin != $text) {
+            $text = str_replace("]", "", $text);
+            $text = str_replace("[", "", $text);
+            return $text;
+        } else {
+            return false;
+        }
 
-        return $text;
+
     }
 }
