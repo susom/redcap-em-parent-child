@@ -52,7 +52,13 @@
         },
         {
           "key": "parent_display_label",
-          "name": "<b>Type how Parent Record will be displayed</b><br>For Example: [field_nam]",
+          "name": "<b>How record will be represented as Parent record</b><br>For Example: [field_nam]",
+          "required": true,
+          "type": "text"
+        },
+        {
+          "key": "child_display_label",
+          "name": "<b>How record will be represented as Child record</b><br>For Example: [field_nam]",
           "required": true,
           "type": "text"
         },

@@ -114,11 +114,11 @@ SearchObject = {
                         // }
 
                         for (var key in children) {
-                            html += '<div class="row p-2"><strong class="ml-2">' + children[key]['label'] + '(' + children[key]['count'] + ' record/s)</strong></div>';
-                            html += '<ul class="list-group" style="width: 100%">';
+                            html += '<div class="row p-2 col-10"><strong class="ml-3">' + children[key]['label'] + '(' + children[key]['count'] + ' record/s)</strong></div>';
+                            html += '<ul class="list-group ml-3" style="width: 100%">';
                             if (children[key]['records'] != undefined) {
                                 for (var j = 0; j < children[key]['records'].length; j++) {
-                                    html += "<li class=\"list-group-item\" ><a class='btn btn-link' href='" + children[key]['records'][j]['url'] + "'>" + children[key]['records'][j]['label'] + "</a><div class=\"mt-2 float-right children-tree\" data-id='" + children[key]['records'][j]['id'] + "' data-instrument='" + children[key]['records'][j]['instrument'] + "' data-event='" + children[key]['records'][j]['event_id'] + "' data-text='" + children[key]['records'][j]['label'] + "'><i\n" +
+                                    html += "<li class=\"list-group-item col-11\" ><a class='btn btn-link' href='" + children[key]['records'][j]['url'] + "'>" + children[key]['records'][j]['label'] + "</a><div class=\"mt-2 float-right children-tree\" data-id='" + children[key]['records'][j]['id'] + "' data-instrument='" + children[key]['records'][j]['instrument'] + "' data-event='" + children[key]['records'][j]['event_id'] + "' data-text='" + children[key]['records'][j]['label'] + "'><i\n" +
                                         "                                                        class=\"fas fa-chevron-right\"></i></div></li>";
                                 }
                             }

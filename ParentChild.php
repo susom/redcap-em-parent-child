@@ -20,6 +20,7 @@ define("PARENT_EVENT", "parent_event");
 define("CHILD_EVENT", "child_event");
 define("CHILD_FOREIGN_KEY", "child_foreign_key");
 define("PARENT_DISPLAY_LABEL", "parent_display_label");
+define("CHILD_DISPLAY_LABEL", "child_display_label");
 define("DISPLAY_CHILDREN_RECORDS", "display_children_records");
 define("TOP_FOREIGN_KEY", "top_foreign_key");
 define("TOP_PARENT_DISPLAY_LABEL", "top_parent_display_label");
