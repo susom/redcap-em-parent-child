@@ -71,7 +71,9 @@ SearchObject = {
             success: function (data) {
                 jQuery("#record-container").html(data);
 
-                jQuery("#record-table").dataTable();
+                jQuery("#record-table").dataTable({
+                    "paging": false,
+                });
             },
             error: function (request, error) {
                 alert("Request: " + JSON.stringify(request));
@@ -99,17 +101,30 @@ SearchObject = {
                     }
                     var children = data.children;
                     if (children != undefined) {
-                        var html = ''
+                        var html = '<div class="row ml-2"><h6>Children Records</h6></div>'
+                        // for (var key in children) {
+                        //     html += children[key]['label'] + '(' + children[key]['count'] + ' records)';
+                        //     html += "<ul>";
+                        //     if (children[key]['records'] != undefined) {
+                        //         for (var j = 0; j < children[key]['records'].length; j++) {
+                        //             html += "<li><a href='" + children[key]['records'][j]['url'] + "'>" + children[key]['records'][j]['label'] + "</a></li>";
+                        //         }
+                        //     }
+                        //     html += "</ul>";
+                        // }
+
                         for (var key in children) {
-                            html += children[key]['label'] + '(' + children[key]['count'] + ' records)';
-                            html += "<ul>";
+                            html += '<div class="row p-2"><strong class="ml-2">' + children[key]['label'] + '(' + children[key]['count'] + ' record/s)</strong></div>';
+                            html += '<ul class="list-group" style="width: 100%">';
                             if (children[key]['records'] != undefined) {
                                 for (var j = 0; j < children[key]['records'].length; j++) {
-                                    html += "<li><a href='" + children[key]['records'][j]['url'] + "'>" + children[key]['records'][j]['label'] + "</a></li>";
+                                    html += "<li class=\"list-group-item\" ><a class='btn btn-link' href='" + children[key]['records'][j]['url'] + "'>" + children[key]['records'][j]['label'] + "</a><div class=\"mt-2 float-right children-tree\" data-id='" + children[key]['records'][j]['id'] + "' data-instrument='" + children[key]['records'][j]['instrument'] + "' data-event='" + children[key]['records'][j]['event_id'] + "' data-text='" + children[key]['records'][j]['label'] + "'><i\n" +
+                                        "                                                        class=\"fas fa-chevron-right\"></i></div></li>";
                                 }
                             }
                             html += "</ul>";
                         }
+
                         $("#" + Record.recordsDIV).html(html);
                     }
                 }
@@ -141,13 +156,13 @@ SearchObject = {
                     }
                     var children = data.children;
                     if (children != undefined) {
-                        var html = '<div class="col-12">';
+                        var html = '<div>';
                         for (var key in children) {
-                            html += '<div class="row"><strong>' + children[key]['label'] + '(' + children[key]['count'] + ' record/s)</strong></div>';
-                            html += '<ul class="list-group list-group-flush" style="width: 100%">';
+                            html += '<div class="row p-2"><h6 class="ml-2">' + children[key]['label'] + '(' + children[key]['count'] + ' record/s)</h6></div>';
+                            html += '<ul class="list-group" style="width: 100%">';
                             if (children[key]['records'] != undefined) {
                                 for (var j = 0; j < children[key]['records'].length; j++) {
-                                    html += "<li class=\"list-group-item\" ><span class='show-record' data-id='" + children[key]['records'][j]['id'] + "' data-instrument='" + children[key]['records'][j]['instrument'] + "' data-event='" + children[key]['records'][j]['event_id'] + "'>" + children[key]['records'][j]['label'] + "</span><div class=\"float-right children-tree\" data-id='" + children[key]['records'][j]['id'] + "' data-instrument='" + children[key]['records'][j]['instrument'] + "' data-event='" + children[key]['records'][j]['event_id'] + "' data-text='" + children[key]['records'][j]['label'] + "'><i\n" +
+                                    html += "<li class=\"list-group-item\" ><span class='show-record btn btn-link' data-id='" + children[key]['records'][j]['id'] + "' data-instrument='" + children[key]['records'][j]['instrument'] + "' data-event='" + children[key]['records'][j]['event_id'] + "'>" + children[key]['records'][j]['label'] + "</span><div class=\"mt-2 float-right children-tree\" data-id='" + children[key]['records'][j]['id'] + "' data-instrument='" + children[key]['records'][j]['instrument'] + "' data-event='" + children[key]['records'][j]['event_id'] + "' data-text='" + children[key]['records'][j]['label'] + "'><i\n" +
                                         "                                                        class=\"fas fa-chevron-right\"></i></div></li>";
                                 }
                             }
@@ -158,13 +173,13 @@ SearchObject = {
                         if ($elem != undefined) {
                             $elem.closest("li").append(html);
                         } else {
-                            var container = "<h4>Related " + label + " records</h4><div class='row'><div id='list-container' class='mt-2 col-5'>" + html + "</div><div class='col-5'><div id='record-container'></div></div></div>"
+                            var container = "<h4>Related " + label + " records</h4><div class='row'><div id='list-container' class='mt-2 col-5'>" + html + "</div><div class='col-6'><div id='record-container'></div></div></div>"
                             jQuery(container).insertAfter("#event_grid_table")
                         }
 
                     } else {
                         if ($elem != undefined) {
-                            $elem.closest("li").append('<div class="row">No child records found</div>');
+                            $elem.closest("li").append('<div class="row p-2 ml-2 col-12" >No child records found</div>');
                         }
 
                     }
@@ -181,7 +196,7 @@ SearchObject = {
         });
     },
     removeTree: function ($elem) {
-        $elem.closest("li").find(".row").remove();
+        $elem.closest("li").find(".col-12").remove();
         $elem.find("i").removeClass("fa-chevron-down");
         $elem.find("i").addClass("fa-chevron-right");
     },

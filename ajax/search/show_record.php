@@ -34,7 +34,7 @@ try {
                     $module->getSearchRelation()->getTopParentArm()->getInstrument()) : $module->getSearchRelation()->getTopParentArm()->getInstrument()) ?></h5>
         </div>
     </div>
-    <table class="table" id="record-table">
+    <table class="table table-striped table-bordered" style="width: 100%" id="record-table">
         <thead class="thead-dark">
         <tr>
             <th>Field</th>
@@ -61,7 +61,7 @@ try {
         ?>
         </tbody>
     </table>
-    <div class="row">
+    <div class="ml-2 row">
         <a class="btn btn-primary"
            href="<?php echo Main::getRecordHomeURL($module->getProjectId(),
                $module->getSearchRelation()->getTopParentArm()->getInstrument(),

@@ -6,6 +6,8 @@ ParentObject = {
         jQuery(document).on("click", ".clickable-row", function () {
             window.location = jQuery(this).data("url");
         });
+
+        jQuery("#record_id-tr").hide();
     },
     inject: function (urls) {
         var html = '';
