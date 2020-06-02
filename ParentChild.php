@@ -44,6 +44,8 @@ define("TOP_PARENT_DISPLAY_LABEL", "top_parent_display_label");
  * @property string $parentRow
  * @property string $topParentRow
  * @property string $addRecordURL
+ * @property string $recordPrefix
+ * @property string $recordId
  * @property RelationalReport $relationalReport
  * @property SearchRelation $searchRelation
  * @property array $roles
@@ -133,6 +135,9 @@ class ParentChild extends \ExternalModules\AbstractExternalModule
     private $roles;
 
     private $project;
+
+    private $recordId;
+
     public function __construct()
     {
         try {
@@ -175,7 +180,9 @@ class ParentChild extends \ExternalModules\AbstractExternalModule
 
         //define my event and instrument;
         $this->setEventId($event_id);
+
         $this->setInstrument($instrument);
+
 
         $this->setRecord(Main::getRecords($this->getEventId(), $record));
 
@@ -369,6 +376,8 @@ class ParentChild extends \ExternalModules\AbstractExternalModule
         $this->setEventId($this->getFirstEventId());
         $this->setTopParentArm(new ParentArm($this->getEventId(), $this->getProjectId(), ''));
         $this->getTopParentArm()->setUrl();
+        $this->setInstrument($instrument);
+        $this->setRecordId($this->getTopParentArm()->getRecordId());
         $this->includeFile("view/form.php");
     }
 
@@ -759,4 +768,21 @@ class ParentChild extends \ExternalModules\AbstractExternalModule
     {
         $this->project = $project;
     }
+
+    /**
+     * @return string
+     */
+    public function getRecordId()
+    {
+        return $this->recordId;
+    }
+
+    /**
+     * @param string $recordId
+     */
+    public function setRecordId($recordId)
+    {
+        $this->recordId = $recordId;
+    }
+
 }

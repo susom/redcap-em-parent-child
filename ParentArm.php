@@ -11,8 +11,10 @@ namespace Stanford\ParentChild;
  * @property string $instrument
  * @property string $instrumentLabel
  * @property array $record
+ * @property string $recordId
  * @property array $dropDownList
  * @property string $url
+ * @property string $recordPrefix
  * @property Relation $relation
  * @property array $fields
  * @property \Project $project
@@ -44,6 +46,10 @@ class ParentArm extends Main
 
     private $project;
 
+    private $recordPrefix;
+
+    private $recordId;
+
     /**
      * ParentArm constructor.
      * @param int $eventId
@@ -70,6 +76,10 @@ class ParentArm extends Main
              */
             $this->setInstrument($this->getProject()->eventsForms[$this->getEventId()][0]);
 
+            /**
+             * set instrument record prefix
+             */
+            $this->setRecordPrefix();
 
             /**
              * set instrument label
@@ -226,10 +236,12 @@ class ParentArm extends Main
     public function setUrl($recordId = null)
     {
         if (is_null($recordId)) {
-            $recordId = $this->getNextId($this->getProjectId(), $this->getEventId());
+            $this->setRecordId($this->getNextId($this->getProjectId(), $this->getEventId(), $this->getRecordPrefix()));
+        } else {
+            $this->setRecordId($recordId);
         }
         $this->url = Main::getRecordHomeURL($this->getProjectId(), $this->getInstrument(), $this->getEventId(),
-            $recordId);
+            $this->getRecordId());
     }
 
     /**
@@ -310,6 +322,38 @@ class ParentArm extends Main
     public function setProject(\Project $project)
     {
         $this->project = $project;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRecordPrefix()
+    {
+        return $this->recordPrefix;
+    }
+
+    /**
+     * @param string $recordPrefix
+     */
+    public function setRecordPrefix()
+    {
+        $this->recordPrefix = Main::getRecordIdPrefix($this->getInstrument());
+    }
+
+    /**
+     * @return string
+     */
+    public function getRecordId()
+    {
+        return $this->recordId;
+    }
+
+    /**
+     * @param string $recordId
+     */
+    public function setRecordId(string $recordId)
+    {
+        $this->recordId = $recordId;
     }
 
 

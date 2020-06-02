@@ -119,7 +119,7 @@ Abstract class Main
      * @return bool|int|string
      * @throws
      */
-    protected function getNextId($pid, $event_id = null, $prefix = '', $padding = false)
+    public static function getNextId($pid, $event_id = null, $prefix = '', $padding = false)
     {
         //Get Project
         global $Proj;
@@ -323,5 +323,15 @@ Abstract class Main
         }
 
 
+    }
+
+    public static function getRecordIdPrefix($instrument)
+    {
+        $recordPrefix = '';
+        $parts = explode("_", $instrument);
+        foreach ($parts as $part) {
+            $recordPrefix .= $part[0];
+        }
+        return $recordPrefix . '-';
     }
 }
