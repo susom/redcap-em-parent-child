@@ -12,10 +12,11 @@ ChildObject = {
                 jQuery("#parent-row").replaceWith(select);
             }
         });
+
     },
     generateDropDown: function (record) {
         var select = '<select name="' + this.parentInputName + '" required><option value="">Select ' + this.parentInputName + '</option>';
-        console.log(ChildObject.tempRecordId)
+
         for (var key in this.dropDownList) {
             if (ChildObject.tempRecordId != '' && ChildObject.tempRecordId == key) {
                 select += "<option value='" + key + "' selected>" + this.dropDownList[key] + "</option>";
@@ -40,7 +41,9 @@ ChildObject = {
             name = this.parentInputName;
         }
         var $input = jQuery("[name='" + name + "']");
-        $input.replaceWith(content);
+        $input.attr('type', 'hidden')
+
+        $input.before(content);
     },
     moveParentToTop: function ($input) {
         var $element = $input.closest("tr").clone();
