@@ -31,8 +31,10 @@ try {
 
                 $relation = new Relation($child);
 
+
                 //temp child object to get some info from it.
-                $tempChild = new ChildArm($child[CHILD_EVENT], $module->getProjectId(), $relation);
+                $tempChild = new ChildArm($child[CHILD_EVENT], $module->getProjectId(), $relation,
+                    $module->getEventRecordPrefix($child[CHILD_EVENT], $id));
 
                 //get child records related to parent id
                 if (!empty($childrenRecords) && isset($childrenRecords[$child[CHILD_EVENT]])) {

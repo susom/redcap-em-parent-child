@@ -57,8 +57,14 @@ class ParentArm extends Main
      * @param string $parentDisplayLabel
      * @param Relation $relation
      */
-    public function __construct($eventId, $projectId, $parentDisplayLabel, $relation = null, $fallback = null)
-    {
+    public function __construct(
+        $eventId,
+        $projectId,
+        $parentDisplayLabel,
+        $relation = null,
+        $fallback = null,
+        $recordIdPrefix = ''
+    ) {
         try {
             global $Proj;
 
@@ -79,7 +85,7 @@ class ParentArm extends Main
             /**
              * set instrument record prefix
              */
-            $this->setRecordPrefix();
+            $this->setRecordPrefix($recordIdPrefix);
 
             /**
              * set instrument label
@@ -335,9 +341,13 @@ class ParentArm extends Main
     /**
      * @param string $recordPrefix
      */
-    public function setRecordPrefix()
+    public function setRecordPrefix($recordIdPrefix)
     {
-        $this->recordPrefix = Main::getRecordIdPrefix($this->getInstrument());
+        if ($recordIdPrefix != '') {
+            $this->recordPrefix = $recordIdPrefix;
+        } else {
+            $this->recordPrefix = Main::getRecordIdPrefix($this->getInstrument());
+        }
     }
 
     /**

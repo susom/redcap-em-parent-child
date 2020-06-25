@@ -24,6 +24,7 @@ define("CHILD_DISPLAY_LABEL", "child_display_label");
 define("DISPLAY_CHILDREN_RECORDS", "display_children_records");
 define("TOP_FOREIGN_KEY", "top_foreign_key");
 define("TOP_PARENT_DISPLAY_LABEL", "top_parent_display_label");
+define("RECORD_ID_PREFIX", "record_id_prefix");
 
 /**
  * Class ParentChild
@@ -213,7 +214,7 @@ class ParentChild extends \ExternalModules\AbstractExternalModule
             }
 
             $this->setParentArm(new ParentArm($child[PARENT_EVENT], $project_id, $relation->getParentDisplayLabel(),
-                $relation, $fallback));
+                $relation, $fallback, $child[RECORD_ID_PREFIX]));
 
             /**
              * if parent id is passed load its record
@@ -222,7 +223,7 @@ class ParentChild extends \ExternalModules\AbstractExternalModule
                 /**
                  * set passed record as temp so can be selected by dropdown
                  */
-                $this->getParentArm()->setTempRecordId(filter_var($_GET['parent'], FILTER_SANITIZE_NUMBER_INT));
+                $this->getParentArm()->setTempRecordId(filter_var($_GET['parent'], FILTER_SANITIZE_STRING));
 
                 $this->getParentArm()->setRecord(Main::getRecords($this->getParentArm()->getEventId(),
                     filter_var($_GET['parent'], FILTER_SANITIZE_NUMBER_INT)));
@@ -374,7 +375,12 @@ class ParentChild extends \ExternalModules\AbstractExternalModule
     {
         $this->setProjectId($project_id);
         $this->setEventId($this->getFirstEventId());
-        $this->setTopParentArm(new ParentArm($this->getEventId(), $this->getProjectId(), ''));
+
+        $parent = $this->getParentEventRelation($this->getEventId());
+        $instance = end($parent);
+
+        $this->setTopParentArm(new ParentArm($this->getEventId(), $this->getProjectId(), '', null, null,
+            $instance['record_id_prefix']));
         $this->getTopParentArm()->setUrl();
         $this->setInstrument($instrument);
         $this->setRecordId($this->getTopParentArm()->getRecordId());
@@ -445,6 +451,24 @@ class ParentChild extends \ExternalModules\AbstractExternalModule
             return false;
         }
         return true;
+    }
+
+    public function getEventRecordPrefix($eventId, $parentRecordId = '')
+    {
+        $parent = $this->getParentEventRelation($eventId);
+        $instance = end($parent);
+        if ($instance[RECORD_ID_PREFIX] != null) {
+            //check if we want to append parent record id.
+            if (strpos($instance[RECORD_ID_PREFIX], '[parent_record_id]') !== false && $parentRecordId != '') {
+                return str_replace('[parent_record_id]', $parentRecordId, $instance[RECORD_ID_PREFIX]);
+            } else {
+                return $instance[RECORD_ID_PREFIX];
+            }
+
+
+        } else {
+            return '';
+        }
     }
 
     /**

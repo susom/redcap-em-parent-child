@@ -12,6 +12,7 @@ namespace Stanford\ParentChild;
  * @property string $parentDisplayLabel
  * @property boolean $displayChildren
  * @property string $topForeignKey
+ * @property string $prefix
  */
 class Relation extends Main
 {
@@ -26,6 +27,9 @@ class Relation extends Main
     private $displayChildren;
 
     private $topForeignKey;
+
+    private $prefix;
+
     /**
      * Relation constructor.
      * @param array $instance
@@ -144,4 +148,22 @@ class Relation extends Main
     {
         $this->foreignKey = $foreignKey;
     }
+
+    /**
+     * @return string
+     */
+    public function getPrefix()
+    {
+        return $this->prefix;
+    }
+
+    /**
+     * @param string $prefix
+     */
+    public function setPrefix(string $prefix)
+    {
+        $this->prefix = $prefix;
+    }
+
+
 }

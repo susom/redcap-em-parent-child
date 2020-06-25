@@ -13,7 +13,7 @@ namespace Stanford\ParentChild;
  * @property string $instrument
  * @property string $instrumentLabel
  * @property string $url
- * @property string $recordPrefix
+ * @property string $recordIdPrefix
  * @property array $record
  * @property Relation $relation
  * @property \Project $project
@@ -41,14 +41,14 @@ class ChildArm extends Main
 
     private $project;
 
-    private $recordPrefix;
+    private $recordIdPrefix;
     /**
      * ChildArm constructor.
      * @param int $eventId
      * @param int $projectId
      * @param Relation $relation
      */
-    public function __construct($eventId, $projectId, $relation = null)
+    public function __construct($eventId, $projectId, $relation = null, $prefix = '')
     {
         try {
             global $Proj;
@@ -70,7 +70,7 @@ class ChildArm extends Main
             /**
              * set instrument record prefix
              */
-            $this->setRecordPrefix();
+            $this->setRecordPrefix($prefix);
 
 
             /**
@@ -265,14 +265,18 @@ class ChildArm extends Main
      */
     public function getRecordPrefix()
     {
-        return $this->recordPrefix;
+        return $this->recordIdPrefix;
     }
 
     /**
      * @param string $recordPrefix
      */
-    public function setRecordPrefix()
+    public function setRecordPrefix($recordIdPrefix = '')
     {
-        $this->recordPrefix = Main::getRecordIdPrefix($this->getInstrument());
+        if ($recordIdPrefix != '') {
+            $this->recordIdPrefix = $recordIdPrefix;
+        } else {
+            $this->recordIdPrefix = Main::getRecordIdPrefix($this->getInstrument());
+        }
     }
 }
