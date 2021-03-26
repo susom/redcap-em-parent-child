@@ -195,9 +195,9 @@ class ParentChild extends \ExternalModules\AbstractExternalModule
         }
 
         //This event is child of another event set relation and parent
-        $child = $this->getChildEventRelation($event_id);
+        $children = $this->getChildEventRelation($event_id);
         if (!empty($children)) {
-            //foreach ($children as $child){
+            foreach ($children as $child) {
                 $relation = new Relation($child);
 
                 /**
@@ -286,8 +286,7 @@ class ParentChild extends \ExternalModules\AbstractExternalModule
                              * set the URL for parent record
                              */
                             $this->getParentArm()->setUrl($parentRecordId);
-
-                            $this->setParentRow("<div id='parent-row' data-parent-id='" . $parentRecordId . "'><a href='" . $this->getParentArm()->getUrl() . "'>" . $this->getParentArm()->getDropDownList()[$parentRecordId] . "</a><a class='float-right' href='javascript:;'><img class='show-list' alt='Edit Parent' src='" . APP_PATH_WEBROOT . "Resources/images/pencil.png'></a></div>");
+                            $this->setParentRow("<div id='parent-record-id-" . $parentRecordId . "' data-parent-id='" . $parentRecordId . "'><a href='" . $this->getParentArm()->getUrl() . "'>" . $this->getParentArm()->getDropDownList()[$parentRecordId] . "</a><a class='float-right' href='javascript:;'><img data-parent-input-name='" . $this->getParentArm()->getRelation()->getForeignKey() . "' data-parent-id='" . $parentRecordId . "' class='show-list' alt='Edit Parent' src='" . APP_PATH_WEBROOT . "Resources/images/pencil.png'></a>$dropdown</div>");
                         }
                     }
                 } else {
@@ -295,7 +294,7 @@ class ParentChild extends \ExternalModules\AbstractExternalModule
                 }
 
                 $this->includeFile("view/child.php");
-            //}
+            }
         }
     }
 
@@ -331,10 +330,10 @@ class ParentChild extends \ExternalModules\AbstractExternalModule
         $results = array();
         foreach ($this->getInstances() as $instance) {
             if ($instance[CHILD_EVENT] == $eventId) {
-                return $instance;
+                $results[] = $instance;
             }
         }
-        return false;
+        return $results;
     }
 
     /**
@@ -342,7 +341,7 @@ class ParentChild extends \ExternalModules\AbstractExternalModule
      */
     public function includeFile($path)
     {
-        include_once $path;
+        require $path;
     }
 
     public function getChildRecords($event, $recordId, $foreignKey, $topParentRecordId = null)

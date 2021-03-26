@@ -5,23 +5,29 @@ ChildObject = {
     tempRecordId: '',
     submissionDiv: "__SUBMITBUTTONS__-div",
     init: function () {
-        jQuery(document).on("click", ".show-list", function () {
+        jQuery(document).on("click", ".show-list", function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            e.stopImmediatePropagation();
             if (confirm("Are you sure you want to edit this record parent?")) {
-                var parentRecordId = jQuery("#parent-row").data("parent-id");
-                var select = ChildObject.generateDropDown(parentRecordId);
-                jQuery("#parent-row").replaceWith(select);
+                var parentRecordId = jQuery(this).data("parent-id");
+                var $input = jQuery("[name='" + jQuery(this).data("parent-input-name") + "']");
+                var dropdown = $input.data('parent-dropdown');
+                var select = ChildObject.generateDropDown(jQuery(this).data("parent-input-name"), dropdown);
+                jQuery("#parent-record-id-" + parentRecordId).replaceWith(select);
             }
         });
 
     },
-    generateDropDown: function (record) {
-        var select = '<select name="' + this.parentInputName + '" required><option value="">Select ' + this.parentInputName + '</option>';
+    generateDropDown: function (parentInputName, dropDownList) {
 
-        for (var key in this.dropDownList) {
+        var select = '<select name="' + parentInputName + '" required><option value="">Select ' + parentInputName + '</option>';
+
+        for (var key in dropDownList) {
             if (ChildObject.tempRecordId != '' && ChildObject.tempRecordId == key) {
-                select += "<option value='" + key + "' selected>" + this.dropDownList[key] + "</option>";
+                select += "<option value='" + key + "' selected>" + dropDownList[key] + "</option>";
             } else {
-                select += "<option value='" + key + "'>" + this.dropDownList[key] + "</option>";
+                select += "<option value='" + key + "'>" + dropDownList[key] + "</option>";
             }
 
         }
@@ -30,7 +36,7 @@ ChildObject = {
     },
     injectDropdown: function () {
         var $input = jQuery("[name='" + this.parentInputName + "']");
-        select = ChildObject.generateDropDown();
+        select = ChildObject.generateDropDown(ChildObject.parentInputName, ChildObject.dropDownList);
         $input.replaceWith(select);
     },
     hideChildButtons: function(){
@@ -41,7 +47,10 @@ ChildObject = {
             name = this.parentInputName;
         }
         var $input = jQuery("[name='" + name + "']");
-        $input.attr('type', 'hidden')
+        $input.attr('type', 'hidden');
+
+        // hack to pass the dropdown list to the element
+        $input.attr('data-parent-dropdown', JSON.stringify(ChildObject.dropDownList))
 
         $input.before(content);
     },

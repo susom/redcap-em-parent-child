@@ -94,6 +94,12 @@
       "required": false,
       "repeatable": true,
       "type": "user-role-list"
+    },
+    {
+      "key": "enable-project-debug-logging",
+      "name": "<b>Enable Debug Logging</b></h6><i> (Requires emLogger)</i><br>If you have questions enabling debugging, please contact the REDCap team for help.",
+      "required": false,
+      "type": "checkbox"
     }
   ]
 }
