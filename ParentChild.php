@@ -195,9 +195,9 @@ class ParentChild extends \ExternalModules\AbstractExternalModule
         }
 
         //This event is child of another event set relation and parent
-        $children = $this->getChildEventRelation($event_id);
+        $child = $this->getChildEventRelation($event_id);
         if (!empty($children)) {
-            foreach ($children as $child){
+            //foreach ($children as $child){
                 $relation = new Relation($child);
 
                 /**
@@ -295,7 +295,7 @@ class ParentChild extends \ExternalModules\AbstractExternalModule
                 }
 
                 $this->includeFile("view/child.php");
-            }
+            //}
         }
     }
 
@@ -331,10 +331,10 @@ class ParentChild extends \ExternalModules\AbstractExternalModule
         $results = array();
         foreach ($this->getInstances() as $instance) {
             if ($instance[CHILD_EVENT] == $eventId) {
-                $results[] = $instance;
+                return $instance;
             }
         }
-        return $results;
+        return false;
     }
 
     /**
@@ -342,7 +342,7 @@ class ParentChild extends \ExternalModules\AbstractExternalModule
      */
     public function includeFile($path)
     {
-        require $path;
+        include_once $path;
     }
 
     public function getChildRecords($event, $recordId, $foreignKey, $topParentRecordId = null)
