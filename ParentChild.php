@@ -241,10 +241,13 @@ class ParentChild extends \ExternalModules\AbstractExternalModule
                 if (!empty($this->getRecord())) {
                     $parentRecordId = $this->getRecord()[$record][$this->getEventId()][$child[CHILD_FOREIGN_KEY]];
 
+                    $this->emLog("Parent Record ID:" . $parentRecordId);
                     if ($parentRecordId != "") {
                         $this->getParentArm()->setRecord(Main::getRecords($this->getParentArm()->getEventId(),
                             $parentRecordId));
                     }
+                    $this->emLog("Parent Record");
+                    $this->emLog($this->getParentArm()->getRecord());
                     /**
                      * if not parent record this this record is orphan and we need to mark it as dirty
                      */
