@@ -166,72 +166,68 @@ Abstract class Main
      */
     public static function getRecords($eventId, $id = null)
     {
-        global $Proj;
-        $projectId = $Proj->project_id;
-        $primaryKey = $Proj->table_pk;
-
-        if (is_array($eventId)) {
-            $eventId = implode(",", $eventId);
-        }
-
-        $sql = "select * from redcap_data rd where project_id = $projectId and event_id IN ($eventId)";
-        $q = db_query($sql);
-        $recordId = '';
-        $result = array();
-        $record = array();
-        while ($row = db_fetch_assoc($q)) {
-            $e = $row['event_id'];
-            if ($recordId != $row['record']) {
-                if (!empty($record)) {
-                    $result[$recordId][$e] = $record;
-                    $record = array();
-                }
-                $record[$row['field_name']] = $row['value'];
-                $recordId = $record[$primaryKey] = $row['record'];
-            } else {
-                $record[$row['field_name']] = $row['value'];
-            }
-        }
-
-        $result[$recordId][$e] = $record;
-
-        if (!is_null($id)) {
-            foreach ($result as $key => $item) {
-                if ($id != $key) {
-                    unset($result[$key]);
-                }
-            }
-        }
+//        global $Proj;
+//        $projectId = $Proj->project_id;
+//        $primaryKey = $Proj->table_pk;
 //
-//            $params = array(
-//                'return_format' => 'array',
-//                'events' => $eventId
-//            );
-//            /*if (!is_null($id)) {
-//                $idField = REDCap::getRecordIdField();
-//                $params = array(
-//                    'return_format' => 'array',
-//                    'events' => $eventId,
-//                    'filterLogic' => "[$idField] = '$id'"
-//                );
+//        if (is_array($eventId)) {
+//            $eventId = implode(",", $eventId);
+//        }
+//
+//        $sql = "select * from redcap_data rd where project_id = $projectId and event_id IN ($eventId)";
+//        $q = db_query($sql);
+//        $recordId = '';
+//        $result = array();
+//        $record = array();
+//        while ($row = db_fetch_assoc($q)) {
+//            $e = $row['event_id'];
+//            if ($recordId != $row['record']) {
+//                if (!empty($record)) {
+//                    $result[$recordId][$e] = $record;
+//                    $record = array();
+//                }
+//                $record[$row['field_name']] = $row['value'];
+//                $recordId = $record[$primaryKey] = $row['record'];
 //            } else {
-//                $params = array(
-//                    'return_format' => 'array',
-//                    'events' => $eventId
-//                );
-//            }*/
+//                $record[$row['field_name']] = $row['value'];
+//            }
+//        }
 //
-//        $records = REDCap::getData($params);
-//        if ($id == null) {
-//            return $records;
-//        } else {
-//            foreach ($records as $recordId => $record) {
-//                if ($recordId == $id) {
-//                    return array($id => $record);
+//        $result[$recordId][$e] = $record;
+//
+//        if (!is_null($id)) {
+//            foreach ($result as $key => $item) {
+//                if ($id != $key) {
+//                    unset($result[$key]);
 //                }
 //            }
 //        }
-        return $result;
+//
+
+        if (!is_null($id)) {
+            $params = array(
+                'return_format' => 'array',
+                'events' => $eventId,
+                'records' => [$id]
+            );
+        } else {
+            $params = array(
+                'return_format' => 'array',
+                'events' => $eventId
+            );
+        }
+
+        $records = REDCap::getData($params);
+        if ($id == null) {
+            return $records;
+        } else {
+            foreach ($records as $recordId => $record) {
+                if ($recordId == $id) {
+                    return array($id => $record);
+                }
+            }
+        }
+        return $records;
     }
 
     /**
