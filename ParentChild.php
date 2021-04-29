@@ -239,13 +239,7 @@ class ParentChild extends \ExternalModules\AbstractExternalModule
                  * in case we are editing child record directly them pull its parent
                  */
                 if (!empty($this->getRecord())) {
-                    $this->emLog("Record ID:" . $record);
-                    $this->emLog("Record:");
-                    $this->emLog($this->getRecord());
-                    $this->emLog("event id " . $this->getEventId());
-                    $this->emLog("child id " . $child);
-                    $this->emLog($child);
-                    $this->emLog("key " . CHILD_FOREIGN_KEY);
+
                     $parentRecordId = $this->getRecord()[$record][$this->getEventId()][$child[CHILD_FOREIGN_KEY]];
 
                     $this->emLog("Parent Record ID:" . $parentRecordId);
@@ -253,8 +247,7 @@ class ParentChild extends \ExternalModules\AbstractExternalModule
                         $this->getParentArm()->setRecord(Main::getRecords($this->getParentArm()->getEventId(),
                             $parentRecordId));
                     }
-                    $this->emLog("Parent Record");
-                    $this->emLog($this->getParentArm()->getRecord());
+
                     /**
                      * if not parent record this this record is orphan and we need to mark it as dirty
                      */
