@@ -244,6 +244,7 @@ class ParentChild extends \ExternalModules\AbstractExternalModule
                     $this->emLog($this->getRecord());
                     $this->emLog("event id " . $this->getEventId());
                     $this->emLog("child id " . $child);
+                    $this->emLog($child);
                     $this->emLog("key " . CHILD_FOREIGN_KEY);
                     $parentRecordId = $this->getRecord()[$record][$this->getEventId()][$child[CHILD_FOREIGN_KEY]];
 
