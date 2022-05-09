@@ -119,8 +119,10 @@ class ChildArm extends Main
     /**
      * @param int $recordId
      */
-    public function setRecordId($recordId)
+    public function setRecordId()
     {
+        $temp = func_get_args();
+        $recordId = $temp[0];
         $this->recordId = $recordId;
 
         /**
