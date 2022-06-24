@@ -89,7 +89,7 @@ trait emLoggerTrait
     function emLoggerGetDebugMode()
     {
         $systemDebug = $this->getSystemSetting('enable-system-debug-logging');
-        $projectDebug = !empty($_GET['pid']) && $this->getProjectSetting('enable-project-debug-logging');
+        $projectDebug = !empty($_GET['pid']) && intval($_GET['pid']) == $_GET['pid'] && $this->getProjectSetting('enable-project-debug-logging');
         return $systemDebug || $projectDebug;
     }
 
