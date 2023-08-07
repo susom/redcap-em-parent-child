@@ -489,7 +489,7 @@ class ParentChild extends \ExternalModules\AbstractExternalModule
      */
     public function setRoles()
     {
-        $roles = $this->getProjectSetting('allowed_roles', $this->getProjectId());
+        $roles = $this->getProjectSetting('allowed_roles', $this->getProjectId())?:[];
         $this->roles = array_filter($roles);
     }
 
