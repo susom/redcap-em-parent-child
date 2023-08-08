@@ -37,17 +37,17 @@ class Relation extends Main
     public function __construct($instance)
     {
         try {
-            $this->setChildEventId($instance[CHILD_EVENT]);
+            $this->setChildEventId($instance[ParentChild::CHILD_EVENT]);
 
-            $this->setForeignKey($instance[CHILD_FOREIGN_KEY]);
+            $this->setForeignKey($instance[ParentChild::CHILD_FOREIGN_KEY]);
 
-            $this->setParentEventId($instance[PARENT_EVENT]);
+            $this->setParentEventId($instance[ParentChild::PARENT_EVENT]);
 
-            $this->setParentDisplayLabel($instance[PARENT_DISPLAY_LABEL]);
+            $this->setParentDisplayLabel($instance[ParentChild::PARENT_DISPLAY_LABEL]);
 
-            $this->setDisplayChildren($instance[DISPLAY_CHILDREN_RECORDS]);
+            $this->setDisplayChildren($instance[ParentChild::DISPLAY_CHILDREN_RECORDS]);
 
-            $this->setTopForeignKey($instance[TOP_FOREIGN_KEY]);
+            $this->setTopForeignKey($instance[ParentChild::TOP_FOREIGN_KEY]);
         } catch (\LogicException $e) {
             echo $e->getMessage();
         }

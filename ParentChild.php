@@ -16,16 +16,6 @@ include_once __DIR__ . "/RelationalReport.php";
 include_once __DIR__ . "/SearchRelation.php";
 include_once __DIR__ . "/emLoggerTrait.php";
 
-define("PARENT_EVENT", "parent_event");
-define("CHILD_EVENT", "child_event");
-define("CHILD_FOREIGN_KEY", "child_foreign_key");
-define("PARENT_DISPLAY_LABEL", "parent_display_label");
-define("CHILD_DISPLAY_LABEL", "child_display_label");
-define("DISPLAY_CHILDREN_RECORDS", "display_children_records");
-define("TOP_FOREIGN_KEY", "top_foreign_key");
-define("TOP_PARENT_DISPLAY_LABEL", "top_parent_display_label");
-define("RECORD_ID_PREFIX", "record_id_prefix");
-
 /**
  * Class ParentChild
  * @package Stanford\ParentChild
@@ -54,6 +44,15 @@ define("RECORD_ID_PREFIX", "record_id_prefix");
  */
 class ParentChild extends \ExternalModules\AbstractExternalModule
 {
+    const PARENT_EVENT = 'parent_event';
+    const CHILD_EVENT = "child_event";
+    const CHILD_FOREIGN_KEY = "child_foreign_key";
+    const PARENT_DISPLAY_LABEL = "parent_display_label";
+    const CHILD_DISPLAY_LABEL = "child_display_label";
+    const DISPLAY_CHILDREN_RECORDS = "display_children_records";
+    const TOP_FOREIGN_KEY = "top_foreign_key";
+    const TOP_PARENT_DISPLAY_LABEL = "top_parent_display_label";
+    const RECORD_ID_PREFIX = "record_id_prefix";
 
     use emLoggerTrait;
     //TODO add new way to define relation without using config.json
@@ -210,12 +209,12 @@ class ParentChild extends \ExternalModules\AbstractExternalModule
                     if ($this->getRecord()[$record][$this->getEventId()][$relation->getTopForeignKey()] != "") {
                         $temp = $this->getChildEventRelation($relation->getParentEventId());
                         $fallback['record_id'] = $this->getRecord()[$record][$this->getEventId()][$relation->getTopForeignKey()];
-                        $fallback['field'] = $temp[CHILD_FOREIGN_KEY];
+                        $fallback['field'] = $temp[self::CHILD_FOREIGN_KEY];
                     }
                 }
 
-                $this->setParentArm(new ParentArm($child[PARENT_EVENT], $project_id, $relation->getParentDisplayLabel(),
-                    $relation, $fallback, $child[RECORD_ID_PREFIX]));
+                $this->setParentArm(new ParentArm($child[self::PARENT_EVENT], $project_id, $relation->getParentDisplayLabel(),
+                    $relation, $fallback, $child[self::RECORD_ID_PREFIX]));
 
                 /**
                  * if parent id is passed load its record
@@ -240,7 +239,7 @@ class ParentChild extends \ExternalModules\AbstractExternalModule
                  */
                 if (!empty($this->getRecord())) {
 
-                    $parentRecordId = $this->getRecord()[$record][$this->getEventId()][$child[CHILD_FOREIGN_KEY]];
+                    $parentRecordId = $this->getRecord()[$record][$this->getEventId()][$child[self::CHILD_FOREIGN_KEY]];
 
                     $this->emLog("Parent Record ID:" . $parentRecordId);
                     if ($parentRecordId != "") {
@@ -257,27 +256,27 @@ class ParentChild extends \ExternalModules\AbstractExternalModule
                         /**
                          * if case no direct parent exists then use top parent
                          */
-                        $parentRecordId = $this->getRecord()[$record][$this->getEventId()][$child[TOP_FOREIGN_KEY]];
+                        $parentRecordId = $this->getRecord()[$record][$this->getEventId()][$child[self::TOP_FOREIGN_KEY]];
 
                         /**
                          * for temp only we will create parent object for top parent. and create temp relation between current event and top parent.
                          */
                         $instance = array(
-                            PARENT_EVENT => $this->getFirstEventId(),
-                            CHILD_EVENT => $this->getEventId(),
-                            CHILD_FOREIGN_KEY => $this->getProjectSetting(TOP_PARENT_DISPLAY_LABEL)
+                            self::PARENT_EVENT => $this->getFirstEventId(),
+                            self::CHILD_EVENT => $this->getEventId(),
+                            self::CHILD_FOREIGN_KEY => $this->getProjectSetting(self::TOP_PARENT_DISPLAY_LABEL)
                         );
 
                         $relation = new Relation($instance);
 
                         $this->setTopParentArm(new ParentArm($this->getFirstEventId(), $project_id,
-                            $this->getProjectSetting(TOP_PARENT_DISPLAY_LABEL), $relation));
+                            $this->getProjectSetting(self::TOP_PARENT_DISPLAY_LABEL), $relation));
                         $this->getTopParentArm()->setRecord(Main::getRecords($this->getFirstEventId(), $parentRecordId));
                         $this->getTopParentArm()->setUrl($parentRecordId);
                         /**
                          * this will make sure record show up in correct position.
                          */
-                        $this->getTopParentArm()->getRelation()->setTopForeignKey($child[TOP_FOREIGN_KEY]);
+                        $this->getTopParentArm()->getRelation()->setTopForeignKey($child[self::TOP_FOREIGN_KEY]);
 
                         /**
                          * top parent row is not editable.
@@ -311,7 +310,7 @@ class ParentChild extends \ExternalModules\AbstractExternalModule
     {
         $result = array();
         foreach ($this->getInstances() as $instance) {
-            if ($instance[PARENT_EVENT] == $eventId) {
+            if ($instance[self::PARENT_EVENT] == $eventId) {
                 $result[] = $instance;
             }
         }
@@ -332,7 +331,7 @@ class ParentChild extends \ExternalModules\AbstractExternalModule
     {
         $results = array();
         foreach ($this->getInstances() as $instance) {
-            if ($instance[CHILD_EVENT] == $eventId) {
+            if ($instance[self::CHILD_EVENT] == $eventId) {
                 $results[] = $instance;
             }
         }
@@ -357,9 +356,9 @@ class ParentChild extends \ExternalModules\AbstractExternalModule
              * if no records found lets check the fall back parent if defined
              */
             if (empty($records)) {
-                $instance = $this->searchInstances($event, $foreignKey, CHILD_EVENT);
-                if ($instance[TOP_FOREIGN_KEY] != "" && $topParentRecordId != null) {
-                    $foreignKey = $instance[TOP_FOREIGN_KEY];
+                $instance = $this->searchInstances($event, $foreignKey, self::CHILD_EVENT);
+                if ($instance[self::TOP_FOREIGN_KEY] != "" && $topParentRecordId != null) {
+                    $foreignKey = $instance[self::TOP_FOREIGN_KEY];
                     return Main::searchRecords($event, $foreignKey, $topParentRecordId);
                 }
             } else {
@@ -410,7 +409,7 @@ class ParentChild extends \ExternalModules\AbstractExternalModule
     private function searchInstances($eventId, $foreignKey, $type)
     {
         foreach ($this->getInstances() as $instance) {
-            if ($instance[$type] == $eventId && $instance[CHILD_FOREIGN_KEY] == $foreignKey) {
+            if ($instance[$type] == $eventId && $instance[self::CHILD_FOREIGN_KEY] == $foreignKey) {
                 return $instance;
             }
         }
@@ -462,12 +461,12 @@ class ParentChild extends \ExternalModules\AbstractExternalModule
     {
         $parent = $this->getParentEventRelation($eventId);
         $instance = end($parent);
-        if ($instance[RECORD_ID_PREFIX] != null) {
+        if ($instance[self::RECORD_ID_PREFIX] != null) {
             //check if we want to append parent record id.
-            if (strpos($instance[RECORD_ID_PREFIX], '[parent_record_id]') !== false && $parentRecordId != '') {
-                return str_replace('[parent_record_id]', $parentRecordId, $instance[RECORD_ID_PREFIX]);
+            if (strpos($instance[self::RECORD_ID_PREFIX], '[parent_record_id]') !== false && $parentRecordId != '') {
+                return str_replace('[parent_record_id]', $parentRecordId, $instance[self::RECORD_ID_PREFIX]);
             } else {
-                return $instance[RECORD_ID_PREFIX];
+                return $instance[self::RECORD_ID_PREFIX];
             }
 
 
@@ -489,7 +488,9 @@ class ParentChild extends \ExternalModules\AbstractExternalModule
      */
     public function setRoles()
     {
-        $roles = $this->getProjectSetting('allowed_roles', $this->getProjectId())?:[];
+        $roles = $this->getProjectSetting('allowed_roles', $this->getProjectId());
+        #  Argument #1 ($array) must be of type array, null given in /var/www/html/modules/parent_child_v9.9.9/ParentChild.php:493
+        if(!is_array($roles)) $roles = [];
         $this->roles = array_filter($roles);
     }
 
