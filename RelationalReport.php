@@ -39,7 +39,7 @@ class RelationalReport extends Main
                 foreach ($children as $child) {
                     $relation = new Relation($child);
 
-                    $child = new ChildArm($child[CHILD_EVENT], $this->getProjectId(), $relation);
+                    $child = new ChildArm($child[ParentChild::$CHILD_EVENT], $this->getProjectId(), $relation);
 
                     $this->setChildrenArms($child);
                 }
