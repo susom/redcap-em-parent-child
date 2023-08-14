@@ -66,7 +66,7 @@ try {
             if ($records) {
                 foreach ($records as $record) {
                     $item = $record[$tempChild->getEventId()];
-                    $label = Main::replaceRecordLabels($child[CHILD_DISPLAY_LABEL], $item);
+                    $label = Main::replaceRecordLabels($child[ParentChild::CHILD_DISPLAY_LABEL], $item);
                     if ($label == false) {
                         $label = $module->limitInstrumentFieldsOnly($tempChild->getInstrument(), $item);
                     }
