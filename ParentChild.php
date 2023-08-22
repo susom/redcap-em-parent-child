@@ -504,7 +504,11 @@ class ParentChild extends \ExternalModules\AbstractExternalModule
      */
     public function setRoles()
     {
-        $roles = $this->getProjectSetting('allowed_roles', $this->getProjectId())?:[];
+
+        $roles = $this->getProjectSetting('allowed_roles', $this->getProjectId());
+        #  Argument #1 ($array) must be of type array, null given in /var/www/html/modules/parent_child_v9.9.9/ParentChild.php:493
+        if(!is_array($roles)) $roles = [];
+
         $this->roles = array_filter($roles);
     }
 
