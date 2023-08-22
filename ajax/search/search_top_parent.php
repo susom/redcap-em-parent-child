@@ -6,7 +6,7 @@ namespace Stanford\ParentChild;
 
 try {
     $term = filter_var($_POST['term'], FILTER_SANITIZE_STRING);
-    $parentLabel = $module->getProjectSetting(TOP_PARENT_DISPLAY_LABEL);
+    $parentLabel = $module->getProjectSetting(ParentChild::$TOP_PARENT_DISPLAY_LABEL);
     //init search object with parent
     $module->setSearchRelation(new SearchRelation($module->getFirstEventId(), $module->getProjectId(), $parentLabel));
 

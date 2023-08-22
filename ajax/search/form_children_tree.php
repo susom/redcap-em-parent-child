@@ -31,17 +31,17 @@ try {
             $relation = new Relation($child);
 
             //temp child object to get some info from it.
-            $tempChild = new ChildArm($child[CHILD_EVENT], $module->getProjectId(), $relation);
+            $tempChild = new ChildArm($child[ParentChild::$CHILD_EVENT], $module->getProjectId(), $relation);
 
             //get child records related to parent id
-            if (!empty($childrenRecords) && isset($childrenRecords[$child[CHILD_EVENT]])) {
-                $records = $childrenRecords[$child[CHILD_EVENT]];
+            if (!empty($childrenRecords) && isset($childrenRecords[$child[ParentChild::$CHILD_EVENT]])) {
+                $records = $childrenRecords[$child[ParentChild::$CHILD_EVENT]];
             } else {
                 $records = false;
             }
 
             //we need to know this event label when its a parent
-            $childAsParent = $module->getParentEventRelation($child[CHILD_EVENT]);
+            $childAsParent = $module->getParentEventRelation($child[ParentChild::$CHILD_EVENT]);
 
 
             $record = $module->getRecord();
@@ -57,7 +57,7 @@ try {
                 "topParentRecordId" => $record[$tempChild->getRelation()->getTopForeignKey()],
             );
             $result['urls'][] = $arr;
-            $result['children'][$child[CHILD_EVENT]] = array(
+            $result['children'][$child[ParentChild::$CHILD_EVENT]] = array(
                 'label' => $tempChild->getInstrumentLabel(),
                 'count' => ($records ? count($records) : 0),
                 'childAsParent' => $childAsParent,
@@ -66,7 +66,9 @@ try {
             if ($records) {
                 foreach ($records as $record) {
                     $item = $record[$tempChild->getEventId()];
-                    $label = Main::replaceRecordLabels($child[ParentChild::CHILD_DISPLAY_LABEL], $item);
+
+                    $label = Main::replaceRecordLabels($child[ParentChild::$CHILD_DISPLAY_LABEL], $item);
+
                     if ($label == false) {
                         $label = $module->limitInstrumentFieldsOnly($tempChild->getInstrument(), $item);
                     }
@@ -82,7 +84,7 @@ try {
                     );
 
                 }
-                $result['children'][$child[CHILD_EVENT]]['records'] = $tempRecords;
+                $result['children'][$child[ParentChild::$CHILD_EVENT]]['records'] = $tempRecords;
             }
         }
     }

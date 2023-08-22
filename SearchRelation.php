@@ -168,15 +168,15 @@ class SearchRelation extends Main
         //pull all records for all events one time.
         $events = array();
         foreach ($children as $child) {
-            $events[] = $child[ParentChild::CHILD_EVENT];
+            $events[] = $child[ParentChild::$CHILD_EVENT];
         }
         $records = Main::getRecords($events);
         foreach ($records as $id => $record) {
             foreach ($children as $child) {
-                if ($record[$child[ParentChild::CHILD_EVENT]][$child[ParentChild::CHILD_FOREIGN_KEY]] != "" && $record[$child[ParentChild::CHILD_EVENT]][$child[ParentChild::CHILD_FOREIGN_KEY]] == $recordsId) {
-                    $result[$child[ParentChild::CHILD_EVENT]][$id] = $record;
-                } elseif ($record[$child[ParentChild::CHILD_EVENT]][$child[ParentChild::TOP_FOREIGN_KEY]] != "" && $record[$child[ParentChild::CHILD_EVENT]][$child[ParentChild::TOP_FOREIGN_KEY]] == $topParentId && !$recordsId) {
-                    $result[$child[ParentChild::CHILD_EVENT]][$id] = $record;
+                if ($record[$child[ParentChild::$CHILD_EVENT]][$child[ParentChild::$CHILD_FOREIGN_KEY]] != "" && $record[$child[ParentChild::$CHILD_EVENT]][$child[ParentChild::$CHILD_FOREIGN_KEY]] == $recordsId) {
+                    $result[$child[ParentChild::$CHILD_EVENT]][$id] = $record;
+                } elseif ($record[$child[ParentChild::$CHILD_EVENT]][$child[ParentChild::$TOP_FOREIGN_KEY]] != "" && $record[$child[ParentChild::$CHILD_EVENT]][$child[ParentChild::$TOP_FOREIGN_KEY]] == $topParentId && !$recordsId) {
+                    $result[$child[ParentChild::$CHILD_EVENT]][$id] = $record;
                 }
             }
         }
