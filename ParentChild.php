@@ -333,7 +333,7 @@ class ParentChild extends \ExternalModules\AbstractExternalModule
         if (!empty($result)) {
             return $result;
         }
-        return false;
+        return [];
     }
 
 
