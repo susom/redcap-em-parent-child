@@ -240,7 +240,9 @@ Abstract class Main
         global $Proj;
         $projectId = $Proj->project_id;
         $primaryKey = $Proj->table_pk;
-        $sql = "select * from redcap_data rd where project_id = $projectId and event_id IN ($eventId)";
+        $data_table = method_exists('\REDCap', 'getDataTable') ? \REDCap::getDataTable($projectId) : "redcap_data";
+
+        $sql = "select * from $data_table rd where project_id = $projectId and event_id IN ($eventId)";
         $q = db_query($sql);
         $recordId = '';
         $result = array();
