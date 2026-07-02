@@ -168,8 +168,12 @@ class ParentChild extends \ExternalModules\AbstractExternalModule
 
                 # add allowed roles is defined
                 $this->setRoles();
+                if($Proj != null){
+                    $this->setProject($Proj);
+                }else{
+                    $this->setProject(new \Project($this->getProjectId()));
+                }
 
-                $this->setProject($Proj);
             }
         } catch (\LogicException $e) {
             echo $e->getMessage();
